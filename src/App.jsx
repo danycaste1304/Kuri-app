@@ -7,7 +7,6 @@ import OnboardingScreen from "./OnboardingScreen";
 import defaultPetImage from "./assets/Armadillo.png";
 import fondo1 from "./assets/Fondo1.png";
 
-
 function App() {
   const [screen, setScreen] = useState("onboarding");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
@@ -54,7 +53,6 @@ function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-
       {/* ONBOARDING / REGISTRO */}
       {screen === "onboarding" && (
         <div className="min-h-screen w-full bg-black/70 flex items-center justify-center px-4">
@@ -94,9 +92,9 @@ function App() {
 
           {/* MAIN */}
           <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
-            <div className="relative flex flex-col items-center w-full max-w-md">
+            <div className="relative flex flex-col items-center w-full max-w-md flex-1">
               {/* TEXTO ARRIBA */}
-              <div className="mt-2 mb-4 md:mt-4 md:mb-6 text-center px-3">
+              <div className="mt-2 mb-3 md:mt-4 md:mb-4 text-center px-3">
                 <h1 className="text-xl md:text-3xl font-bold text-slate-50 leading-tight">
                   Hola, soy{" "}
                   <span className="text-emerald-300 drop-shadow-[0_0_10px_rgba(0,0,0,0.9)]">
@@ -110,35 +108,35 @@ function App() {
                 </p>
               </div>
 
-              {/* CONTENEDOR DE MASCOTA Y ACCESORIO */}
-              <div className="relative flex flex-col items-center justify-center w-full">
-                <img
-                  src={petImageState}
-                  alt="Mascota financiera"
-                  className="w-[260px] h-[300px] md:w-[360px] md:h-[400px] object-contain object-bottom drop-shadow-[0_0_25px_rgba(0,255,200,0.45)]"
-                  style={{
-                    marginTop: "165px",     // antes 190px → la subimos un poco para móvil
-                    marginBottom: "-130px", // ajustado para que siga sobre la plataforma
-                  }}
-                />
+              {/* ZONA ESCENARIO: MASCOTA SOBRE LA BASE */}
+              <div className="relative w-full flex-1">
+                {/* Este wrapper ancla la mascota al fondo, centrada y sobre la base */}
+                <div className="absolute inset-x-0 bottom-[88px] md:bottom-[104px] flex justify-center">
+                  <div className="relative w-[260px] h-[300px] md:w-[360px] md:h-[400px] flex items-end justify-center">
+                    <img
+                      src={petImageState}
+                      alt="Mascota financiera"
+                      className="w-full h-full object-contain object-bottom drop-shadow-[0_0_25px_rgba(0,255,200,0.45)]"
+                    />
 
-
-                {accessory && (
-                  <img
-                    src={accessory.img}
-                    alt={accessory.label}
-                    className="absolute left-1/2 -translate-x-1/2 object-contain"
-                    style={
-                      (accessoryStyles[currentPetId] &&
-                        accessoryStyles[currentPetId][accessory.id]) ||
-                      (accessoryStyles.default &&
-                        accessoryStyles.default[accessory.id]) || {
-                        top: "230px",
-                        width: "160px",
-                      }
-                    }
-                  />
-                )}
+                    {accessory && (
+                      <img
+                        src={accessory.img}
+                        alt={accessory.label}
+                        className="absolute left-1/2 -translate-x-1/2 object-contain"
+                        style={
+                          (accessoryStyles[currentPetId] &&
+                            accessoryStyles[currentPetId][accessory.id]) ||
+                          (accessoryStyles.default &&
+                            accessoryStyles.default[accessory.id]) || {
+                            top: "230px",
+                            width: "160px",
+                          }
+                        }
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </main>
