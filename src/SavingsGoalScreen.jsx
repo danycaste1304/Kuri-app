@@ -1,41 +1,45 @@
 import React, { useState } from "react";
 
 export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
-  const [goal, setGoal] = useState("");
-  const [saved, setSaved] = useState("");
-  const [weeklyAmount, setWeeklyAmount] = useState("");
-  const [weekHistory, setWeekHistory] = useState([]);
-  const [rewardClaimed, setRewardClaimed] = useState(false);
+  // Objetivo sugerido (podrías cambiar el valor inicial si quieres)
+  const [goalInput, setGoalInput] = useState("300"); // USD
+  const numericGoal = parseFloat(goalInput) || 0;
 
-  const numericGoal = parseFloat(goal) || 0;
-  const numericSaved = parseFloat(saved) || 0;
-  const numericWeekly = parseFloat(weeklyAmount) || 0;
+  // Semanas en las que el usuario cumplió su objetivo semanal
+  const [weeksCompleted, setWeeksCompleted] = useState(0);
 
-  const goalReached = numericGoal > 0 && numericSaved >= numericGoal;
-  const progress = numericGoal > 0 ? (numericSaved / numericGoal) * 100 : 0;
-  const clampedProgress = Math.min(progress, 100); // para el tarrito
+  // Recompensa grande por objetivo largo plazo
+  const [longTermRewardClaimed, setLongTermRewardClaimed] = useState(false);
 
-  const handleAddWeek = () => {
-    if (!numericWeekly || numericWeekly <= 0) return;
-    const newSaved = numericSaved + numericWeekly;
-    setSaved(newSaved.toString());
+  // Parámetros de recompensa (ajustables)
+  const WEEKLY_COINS = 5;
+  const LONG_TERM_COINS = 50;
 
-    setWeekHistory((prev) => [
-      ...prev,
-      {
-        week: prev.length + 1,
-        amount: numericWeekly,
-      },
-    ]);
+  // Meta semanal sugerida: repartimos el objetivo en 12 meses * 4 semanas
+  const weeklyTarget =
+    numericGoal > 0 ? numericGoal / (12 * 4) : 0; // muy aproximado, pero suficiente para un MVP
 
-    setWeeklyAmount("");
+  // Ahorro "simulado" acumulado según semanas cumplidas
+  const approximateSaved = weeksCompleted * weeklyTarget;
+
+  const progress =
+    numericGoal > 0 ? (approximateSaved / numericGoal) * 100 : 0;
+  const clampedProgress = Math.min(progress, 100);
+  const goalReached = clampedProgress >= 100;
+
+  const handleWeekCompleted = () => {
+    if (!numericGoal || numericGoal <= 0) return;
+
+    // En la vida real esto lo marcaría el backend al ver tus gastos,
+    // aquí solo simulamos con un botón.
+    setWeeksCompleted((prev) => prev + 1);
+    onEarnCoins?.(WEEKLY_COINS);
   };
 
-  const handleClaimReward = () => {
-    if (!goalReached || rewardClaimed) return;
-    // Recompensa fija, por ejemplo 50 monedas
-    onEarnCoins?.(50);
-    setRewardClaimed(true);
+  const handleClaimLongTermReward = () => {
+    if (!goalReached || longTermRewardClaimed) return;
+    onEarnCoins?.(LONG_TERM_COINS);
+    setLongTermRewardClaimed(true);
   };
 
   return (
@@ -52,57 +56,79 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
       </div>
 
       <p className="text-sm md:text-base text-slate-200 mb-4">
-        Kuri se conecta a tu banco (ficticiamente) para ayudarte a ver cuánto
-        estás ahorrando. Usa esta pantalla como tu{" "}
+        Kuri analiza (ficticiamente) tus gastos del banco y te propone un{" "}
         <span className="font-semibold text-emerald-300">
-          tarrito de ahorro semanal
+          objetivo de ahorro a largo plazo
         </span>{" "}
-        y mira cómo se va llenando hasta cumplir tu meta. 💚
+        y una meta semanal alcanzable. Cada semana que cumples, tu tarrito se
+        llena, ganas moneditas y te acercas a desbloquear nuevas recompensas.
       </p>
 
       {/* Zona superior: objetivo + tarrito */}
       <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr] gap-4 mb-5">
-        {/* Objetivo y montos */}
+        {/* Objetivo y datos sugeridos */}
         <div className="bg-slate-900/75 border border-slate-700 rounded-2xl p-4">
-          <h2 className="text-lg font-semibold mb-3">Configuración de objetivo</h2>
+          <h2 className="text-lg font-semibold mb-3">
+            Objetivo sugerido por Kuri
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
             <div>
               <label className="block text-xs text-slate-300 mb-1">
-                Monto objetivo (USD)
+                Objetivo de ahorro a largo plazo (USD)
               </label>
               <input
                 type="number"
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
+                value={goalInput}
+                onChange={(e) => setGoalInput(e.target.value)}
                 className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
-                placeholder="Ej: 200"
+                placeholder="Ej: 300"
               />
+              <p className="mt-1 text-[11px] text-slate-400">
+                En la versión real, este valor vendría de tu comportamiento de
+                gasto.
+              </p>
             </div>
 
             <div>
               <label className="block text-xs text-slate-300 mb-1">
-                Llevo ahorrado (USD)
+                Meta semanal sugerida
               </label>
-              <input
-                type="number"
-                value={saved}
-                onChange={(e) => setSaved(e.target.value)}
-                className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
-                placeholder="Ej: 80"
-              />
+              <div className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm flex items-center">
+                {numericGoal > 0 ? (
+                  <span>
+                    ~{" "}
+                    <span className="font-semibold text-emerald-300">
+                      {weeklyTarget.toFixed(2)} USD
+                    </span>{" "}
+                    por semana
+                  </span>
+                ) : (
+                  <span className="text-slate-400">
+                    Define un objetivo para ver la meta semanal.
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-[11px] text-slate-400">
+                Calculada a partir de tu objetivo anual para que sea alcanzable.
+              </p>
             </div>
           </div>
 
-          {/* Progreso numérico */}
-          <div className="mt-4">
+          {/* Progreso numérico aproximado */}
+          <div className="mt-2">
             <div className="flex justify-between text-[11px] text-slate-300 mb-1">
-              <span>Progreso total</span>
-              <span>
-                {numericGoal > 0
-                  ? `${numericSaved.toFixed(2)} / ${numericGoal.toFixed(2)} USD`
-                  : "Define tu objetivo para empezar"}
-              </span>
+              <span>Progreso hacia tu objetivo</span>
+              {numericGoal > 0 ? (
+                <span>
+                  Semanas cumplidas:{" "}
+                  <span className="font-semibold text-emerald-300">
+                    {weeksCompleted}
+                  </span>
+                </span>
+              ) : (
+                <span>Define un objetivo para comenzar</span>
+              )}
             </div>
             <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
               <div
@@ -115,7 +141,8 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
 
             {goalReached && (
               <p className="mt-2 text-xs md:text-sm text-emerald-300">
-                🎉 ¡Felicitaciones! Alcanzaste tu objetivo de ahorro.
+                🎉 ¡Tu patrón de ahorro sostenido alcanzó el objetivo que Kuri
+                te propuso!
               </p>
             )}
           </div>
@@ -127,8 +154,8 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
             Tarrito de ahorro
           </h2>
           <p className="text-[11px] md:text-xs text-slate-300 text-center mb-3">
-            Imagina que cada dólar que ahorras se va a este tarrito.  
-            Mientras más ahorres, más se llena. 🫙
+            Cada semana que cumples tu meta, el tarrito se llena un poco más.  
+            Cuando se llene del todo, desbloqueas recompensas especiales. 🫙
           </p>
 
           <div className="relative w-20 h-40 md:w-24 md:h-48 mx-auto my-2 flex items-end justify-center">
@@ -147,14 +174,14 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-3 md:w-16 md:h-3.5 rounded-t-xl bg-slate-200/90 border border-slate-400" />
           </div>
 
-          <p className="text-xs text-slate-200 mt-2">
+          <p className="text-xs text-slate-200 mt-2 text-center">
             {numericGoal > 0 ? (
               <>
-                Has llenado{" "}
+                Tu tarrito está aproximadamente al{" "}
                 <span className="font-semibold text-emerald-300">
                   {clampedProgress.toFixed(1)}%
                 </span>{" "}
-                de tu tarrito.
+                según las semanas que has cumplido.
               </>
             ) : (
               "Define un objetivo para empezar a llenar tu tarrito."
@@ -163,81 +190,87 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
         </div>
       </div>
 
-      {/* Ahorro semanal */}
+      {/* Ahorro semanal (sin ingresar montos manuales) */}
       <div className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 mb-5">
-        <h2 className="text-lg font-semibold mb-2">Ahorro semana a semana</h2>
+        <h2 className="text-lg font-semibold mb-2">Progreso semanal</h2>
         <p className="text-xs md:text-sm text-slate-200 mb-3">
-          Cada semana, cuando veas tus movimientos del banco, registra cuánto
-          lograste ahorrar. Así Kuri puede motivarte con tu progreso real. ✨
+          Cada semana, Kuri revisa tus gastos y comprueba si lograste ahorrar al
+          menos la meta sugerida. En esta versión, puedes simularlo marcando las
+          semanas que cumpliste tu objetivo. 💚
         </p>
 
-        <div className="flex flex-col md:flex-row md:items-end gap-3 mb-3">
-          <div className="md:flex-1">
-            <label className="block text-xs text-slate-300 mb-1">
-              Ahorro de esta semana (USD)
-            </label>
-            <input
-              type="number"
-              value={weeklyAmount}
-              onChange={(e) => setWeeklyAmount(e.target.value)}
-              className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
-              placeholder="Ej: 10"
-            />
-          </div>
-
-          <button
-            onClick={handleAddWeek}
-            className="md:w-auto w-full px-4 py-2 rounded-xl bg-emerald-400 text-slate-900 text-sm font-semibold hover:bg-emerald-300 transition"
-          >
-            Añadir a mi tarrito
-          </button>
-        </div>
-
-        {weekHistory.length > 0 && (
-          <div className="mt-2">
-            <p className="text-xs text-slate-300 mb-1">
-              Historial reciente de ahorro:
-            </p>
-            <ul className="text-[11px] text-slate-200 max-h-24 overflow-y-auto pr-1">
-              {weekHistory
-                .slice()
-                .reverse()
-                .map((w) => (
-                  <li key={w.week}>
-                    Semana {w.week}: +${w.amount.toFixed(2)}
-                  </li>
-                ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {/* Recompensa de monedas */}
-      <div className="bg-slate-900/80 border border-emerald-500/40 rounded-2xl p-4 mb-5">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              Recompensa de Kuri
-              <span>🪙</span>
-            </h2>
-            <p className="text-xs md:text-sm text-slate-200 mt-1">
-              Al cumplir tu objetivo puedes reclamar{" "}
-              <span className="font-semibold text-amber-300">50 moneditas</span>{" "}
-              para desbloquear nuevas mascotas y accesorios.
+            <p className="text-sm text-slate-100">
+              Semanas cumplidas:{" "}
+              <span className="font-semibold text-emerald-300">
+                {weeksCompleted}
+              </span>
             </p>
+            {numericGoal > 0 && weeklyTarget > 0 && (
+              <p className="text-[11px] text-slate-400 mt-1">
+                Ahorro aproximado asociado: ~{" "}
+                <span className="text-emerald-300">
+                  {(weeksCompleted * weeklyTarget).toFixed(2)} USD
+                </span>
+              </p>
+            )}
           </div>
 
           <button
-            onClick={handleClaimReward}
-            disabled={!goalReached || rewardClaimed}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition
+            onClick={handleWeekCompleted}
+            disabled={!numericGoal || numericGoal <= 0}
+            className={`md:w-auto w-full px-4 py-2 rounded-xl text-sm font-semibold transition
               ${
-                goalReached && !rewardClaimed
+                numericGoal > 0
                   ? "bg-emerald-400 text-slate-900 hover:bg-emerald-300"
                   : "bg-slate-700 text-slate-400 cursor-not-allowed"
               }`}
           >
-            {rewardClaimed ? "Recompensa reclamada" : "Reclamar 50 monedas"}
+            Marcar semana como cumplida
+          </button>
+        </div>
+
+        <p className="mt-2 text-[11px] text-slate-400">
+          Cada semana cumplida te da{" "}
+          <span className="text-amber-300 font-semibold">
+            +{WEEKLY_COINS} monedas
+          </span>{" "}
+          para accesorios y mascotas.
+        </p>
+      </div>
+
+      {/* Recompensa de objetivo largo plazo */}
+      <div className="bg-slate-900/80 border border-emerald-500/40 rounded-2xl p-4 mb-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              Recompensa de Kuri (largo plazo)
+              <span>🪙</span>
+            </h2>
+            <p className="text-xs md:text-sm text-slate-200 mt-1">
+              Cuando mantienes tu hábito de ahorro y alcanzas el objetivo que
+              Kuri te propuso, puedes reclamar una recompensa extra de{" "}
+              <span className="font-semibold text-amber-300">
+                {LONG_TERM_COINS} moneditas
+              </span>
+              .
+            </p>
+          </div>
+
+          <button
+            onClick={handleClaimLongTermReward}
+            disabled={!goalReached || longTermRewardClaimed}
+            className={`px-4 py-2 rounded-xl text-sm font-semibold transition
+              ${
+                goalReached && !longTermRewardClaimed
+                  ? "bg-emerald-400 text-slate-900 hover:bg-emerald-300"
+                  : "bg-slate-700 text-slate-400 cursor-not-allowed"
+              }`}
+          >
+            {longTermRewardClaimed
+              ? "Recompensa reclamada"
+              : "Reclamar recompensa"}
           </button>
         </div>
       </div>
@@ -248,9 +281,9 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
           Crea tu propia mascota virtual
         </h2>
         <p className="text-xs md:text-sm text-slate-200 mb-3">
-          Cuando alcanzas tu objetivo de ahorro, desbloqueas la opción de crear
-          una mascota única que te represente. Puedes diseñarla tú mismo o
-          generar ideas usando inteligencia artificial. 💡
+          Cuando mantienes tu ahorro y cumples el objetivo de Kuri, desbloqueas
+          la opción de crear una mascota única. Puedes diseñarla tú mismo o
+          generar ideas con inteligencia artificial. 💡
         </p>
 
         <div
@@ -264,8 +297,8 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
                 Diseñar mi propia mascota
               </h3>
               <p className="text-xs text-slate-300 mb-2">
-                Define color, forma, accesorios y personalidad. Ideal para que
-                tu Kuri sea 100% tú.
+                Elige colores, estilo, accesorios y personalidad. Ideal para que
+                tu Kuri sea 100% tuyo.
               </p>
             </div>
             <button
@@ -301,7 +334,8 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
 
         {!goalReached && (
           <p className="mt-3 text-[11px] text-slate-400">
-            🔒 Esta sección se desbloquea al alcanzar tu objetivo de ahorro.
+            🔒 Esta sección se desbloquea cuando cumples el objetivo de ahorro
+            que Kuri te propuso.
           </p>
         )}
       </div>
