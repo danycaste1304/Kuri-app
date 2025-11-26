@@ -6,42 +6,38 @@ import SavingsGoalScreen from "./SavingsGoalScreen";
 import OnboardingScreen from "./OnboardingScreen";
 import defaultPetImage from "./assets/Armadillo.png";
 import fondo1 from "./assets/Fondo1.png";
-import Sombrero from "./assets/sombrero.png"; // sombrero para equiparlo por defecto
+import Sombrero from "./assets/sombrero.png"; // para tenerlo gratis (no equipado)
 
 function App() {
   const [screen, setScreen] = useState("onboarding");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
-  // Sombrero gratis y equipado por defecto
-  const [accessory, setAccessory] = useState({
-    id: "sombrero",
-    label: "Sombrero",
-    img: Sombrero,
-  });
+  // 👒 Kuri YA NO sale con sombrero puesto
+  const [accessory, setAccessory] = useState(null);
 
-  // Monedas iniciales para probar compras
-  const [coins, setCoins] = useState(120);
+  // 🪙 Menos monedas iniciales para probar
+  const [coins, setCoins] = useState(40);
 
-  // Mascotas que el usuario ya posee (armadillo y dragón gratis)
+  // 🐾 Mascotas que el usuario ya posee (armadillo y dragón gratis)
   const [ownedPets, setOwnedPets] = useState(["armadillo", "dragon"]);
 
-  // Accesorios que el usuario ya posee (sombrero gratis por defecto)
+  // 🎁 Accesorios que el usuario ya posee (sombrero gratis por defecto)
   const [ownedAccessories, setOwnedAccessories] = useState(["sombrero"]);
 
   const [userProfile, setUserProfile] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
 
-  // Notificación de gasto fuera de presupuesto
+  // 🔔 Notificación de gasto fuera de presupuesto
   const [spendingAlert, setSpendingAlert] = useState(false);
 
-  // Mostrar la notificación 1 minuto después de entrar al HOME
+  // ▶️ Mostrar la notificación unos segundos después de entrar al HOME
   useEffect(() => {
     if (screen !== "home") return;
 
     const timer = setTimeout(() => {
       setSpendingAlert(true);
-    }, 60_000); // 60 segundos
+    }, 15000); // 15 s para probar fácil; luego si quieres lo cambiamos a 60000
 
     return () => clearTimeout(timer);
   }, [screen]);
@@ -53,42 +49,36 @@ function App() {
       lazo: { top: "210px", width: "150px" },
       guitarra: { top: "380px", width: "190px", transform: "translateX(-50px)" },
     },
-
     conejo: {
       diadema: { top: "240px", width: "190px", transform: "translateX(-60px)" },
       sombrero: { top: "210px", width: "180px" },
       lazo: { top: "255px", width: "140px" },
       guitarra: { top: "400px", width: "190px", transform: "translateX(-35px)" },
     },
-
     buho: {
       diadema: { top: "180px", width: "160px" },
       sombrero: { top: "160px", width: "170px" },
       lazo: { top: "200px", width: "130px" },
       guitarra: { top: "340px", width: "180px", transform: "translateX(-40px)" },
     },
-
     dragon: {
       diadema: { top: "210px", width: "200px" },
       sombrero: { top: "200px", width: "190px" },
       lazo: { top: "240px", width: "150px" },
       guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
     },
-
     cerdito: {
       diadema: { top: "220px", width: "160px" },
       sombrero: { top: "200px", width: "170px" },
       lazo: { top: "250px", width: "130px" },
       guitarra: { top: "360px", width: "170px", transform: "translateX(-40px)" },
     },
-
     zorro: {
       diadema: { top: "210px", width: "170px" },
       sombrero: { top: "190px", width: "180px" },
       lazo: { top: "235px", width: "140px" },
       guitarra: { top: "370px", width: "180px", transform: "translateX(-45px)" },
     },
-
     default: {
       diadema: { top: "220px", width: "170px" },
       sombrero: { top: "210px", width: "180px" },
@@ -154,7 +144,7 @@ function App() {
             </div>
           </header>
 
-          {/* NOTIFICACIÓN DE GASTO FUERA DE PRESUPUESTO (aparece tras 1 min) */}
+          {/* NOTIFICACIÓN DE GASTO FUERA DE PRESUPUESTO */}
           {spendingAlert && (
             <div className="px-4 md:px-8 mt-1">
               <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
@@ -179,8 +169,8 @@ function App() {
           {/* MAIN */}
           <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
             <div className="relative flex flex-col items-center w-full max-w-md flex-1">
-              {/* BURBUJA DE TEXTO DE KURI */}
-              <div className="mt-3 mb-2 md:mt-4 md:mb-3 w-full flex justify-center px-3">
+              {/* 💬 BURBUJA DE TEXTO DE KURI – MÁS ABAJO */}
+              <div className="mt-8 md:mt-10 mb-2 md:mb-3 w-full flex justify-center px-3">
                 <div className="relative max-w-sm bg-slate-900/85 border border-emerald-400/40 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/20">
                   {/* Colita centrada, apuntando hacia Kuri */}
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900/85 border-l border-b border-emerald-400/40 rotate-45" />
@@ -232,26 +222,10 @@ function App() {
           <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
             <div className="bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex gap-5 md:gap-8 shadow-lg backdrop-blur-md">
               {[
-                {
-                  label: "Gastos",
-                  icon: "❤️",
-                  action: () => setScreen("expenses"),
-                },
-                {
-                  label: "Consejos",
-                  icon: "💡",
-                  action: () => setScreen("advice"),
-                },
-                {
-                  label: "Tu objetivo",
-                  icon: "🎯",
-                  action: () => setScreen("savings"),
-                },
-                {
-                  label: "Mascota",
-                  icon: "🐾",
-                  action: () => setScreen("customize"),
-                },
+                { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
+                { label: "Consejos", icon: "💡", action: () => setScreen("advice") },
+                { label: "Tu objetivo", icon: "🎯", action: () => setScreen("savings") },
+                { label: "Mascota", icon: "🐾", action: () => setScreen("customize") },
               ].map((btn) => (
                 <button
                   key={btn.label}
@@ -286,15 +260,12 @@ function App() {
             }}
             onBuyPet={(petObj) => {
               if (ownedPets.includes(petObj.id)) return;
-
               if (coins < petObj.price) {
                 alert("No tienes suficientes monedas para esta mascota.");
                 return;
               }
-
               setCoins((c) => c - petObj.price);
               setOwnedPets((prev) => [...prev, petObj.id]);
-
               setPetImageState(petObj.img);
               setCurrentPetId(petObj.id);
               setScreen("home");
@@ -305,15 +276,12 @@ function App() {
             }}
             onBuyAccessory={(acc) => {
               if (ownedAccessories.includes(acc.id)) return;
-
               if (coins < acc.price) {
                 alert("No tienes suficientes monedas para este accesorio.");
                 return;
               }
-
               setCoins((c) => c - acc.price);
               setOwnedAccessories((prev) => [...prev, acc.id]);
-
               setAccessory(acc);
               setScreen("home");
             }}
