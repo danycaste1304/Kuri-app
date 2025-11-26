@@ -12,30 +12,68 @@ function App() {
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
   const [accessory, setAccessory] = useState(null);
+  const [coins, setCoins] = useState(0);
+
+  // Mascotas que el usuario ya posee (armadillo y dragón gratis)
+  const [ownedPets, setOwnedPets] = useState(["armadillo", "dragon"]);
+  // Accesorios que el usuario ya posee (empieza vacío)
+  const [ownedAccessories, setOwnedAccessories] = useState([]);
+
 
   const [userProfile, setUserProfile] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
 
   const accessoryStyles = {
-    armadillo: {
-      diadema: { top: "200px", width: "200px", transform: "translateX(-65px)" },
-      sombrero: { top: "190px", width: "190px" },
-      lazo: { top: "210px", width: "150px" },
-      guitarra: { top: "380px", width: "190px", transform: "translateX(-50px)" },
-    },
-    conejo: {
-      diadema: { top: "240px", width: "190px", transform: "translateX(-60px)" },
-      sombrero: { top: "210px", width: "180px" },
-      lazo: { top: "255px", width: "140px" },
-      guitarra: { top: "400px", width: "190px", transform: "translateX(-35px)" },
-    },
-    default: {
-      diadema: { top: "220px", width: "170px" },
-      sombrero: { top: "210px", width: "180px" },
-      lazo: { top: "255px", width: "140px" },
-      guitarra: { top: "285px", width: "180px" },
-    },
-  };
+  armadillo: {
+    diadema:  { top: "200px", width: "200px", transform: "translateX(-65px)" },
+    sombrero: { top: "190px", width: "190px" },
+    lazo:     { top: "210px", width: "150px" },
+    guitarra: { top: "380px", width: "190px", transform: "translateX(-50px)" },
+  },
+
+  conejo: {
+    diadema:  { top: "240px", width: "190px", transform: "translateX(-60px)" },
+    sombrero: { top: "210px", width: "180px" },
+    lazo:     { top: "255px", width: "140px" },
+    guitarra: { top: "400px", width: "190px", transform: "translateX(-35px)" },
+  },
+
+  buho: {
+    diadema:  { top: "180px", width: "160px" },
+    sombrero: { top: "160px", width: "170px" },
+    lazo:     { top: "200px", width: "130px" },
+    guitarra: { top: "340px", width: "180px", transform: "translateX(-40px)" },
+  },
+
+  dragon: {
+    diadema:  { top: "210px", width: "200px" },
+    sombrero: { top: "200px", width: "190px" },
+    lazo:     { top: "240px", width: "150px" },
+    guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
+  },
+
+  cerdito: {
+    diadema:  { top: "220px", width: "160px" },
+    sombrero: { top: "200px", width: "170px" },
+    lazo:     { top: "250px", width: "130px" },
+    guitarra: { top: "360px", width: "170px", transform: "translateX(-40px)" },
+  },
+
+  zorro: {
+    diadema:  { top: "210px", width: "170px" },
+    sombrero: { top: "190px", width: "180px" },
+    lazo:     { top: "235px", width: "140px" },
+    guitarra: { top: "370px", width: "180px", transform: "translateX(-45px)" },
+  },
+
+  default: {
+    diadema:  { top: "220px", width: "170px" },
+    sombrero: { top: "210px", width: "180px" },
+    lazo:     { top: "255px", width: "140px" },
+    guitarra: { top: "285px", width: "180px" },
+  },
+};
+
 
   const displayName = userProfile?.name || "Usuario";
   const initials = displayName.charAt(0).toUpperCase();
@@ -85,9 +123,14 @@ function App() {
               </div>
             </div>
 
-            <button className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-900/80 border border-slate-700 flex items-center justify-center hover:bg-slate-800 transition">
-              <span className="text-lg md:text-xl">⚙️</span>
-            </button>
+            {/* Contador de monedas */}
+            <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
+              <span className="text-lg">🪙</span>
+              <span className="text-sm md:text-base font-semibold text-amber-300">
+                {coins}
+              </span>
+            </div>
+
           </header>
 
           {/* MAIN */}
@@ -190,8 +233,28 @@ function App() {
           <CustomizeScreen
             currentAccessory={accessory}
             selectedPetId={currentPetId}
+            coins={coins}
+            ownedPets={ownedPets}
+            ownedAccessories={ownedAccessories}
             onBack={() => setScreen("home")}
             onSelectPet={(petObj) => {
+              // Solo seleccionar (ya viene validado desde CustomizeScreen)
+              setPetImageState(petObj.img);
+              setCurrentPetId(petObj.id);
+              setScreen("home");
+            }}
+            onBuyPet={(petObj) => {
+              if (ownedPets.includes(petObj.id)) return;
+
+              if (coins < petObj.price) {
+                alert("No tienes suficientes monedas para esta mascota.");
+                return;
+              }
+
+              setCoins((c) => c - petObj.price);
+              setOwnedPets((prev) => [...prev, petObj.id]);
+
+              // Opcional: seleccionar la nueva mascota al comprarla
               setPetImageState(petObj.img);
               setCurrentPetId(petObj.id);
               setScreen("home");
@@ -200,9 +263,25 @@ function App() {
               setAccessory(acc);
               setScreen("home");
             }}
+            onBuyAccessory={(acc) => {
+              if (ownedAccessories.includes(acc.id)) return;
+
+              if (coins < acc.price) {
+                alert("No tienes suficientes monedas para este accesorio.");
+                return;
+              }
+
+              setCoins((c) => c - acc.price);
+              setOwnedAccessories((prev) => [...prev, acc.id]);
+
+              // Equipar accesorio recién comprado
+              setAccessory(acc);
+              setScreen("home");
+            }}
           />
         </div>
       )}
+
 
       {/* RESUMEN DE GASTOS */}
       {screen === "expenses" && (
@@ -221,7 +300,10 @@ function App() {
       {/* OBJETIVO DE AHORRO */}
       {screen === "savings" && (
         <div className="min-h-screen w-full bg-black/70">
-          <SavingsGoalScreen onBack={() => setScreen("home")} />
+          <SavingsGoalScreen
+            onBack={() => setScreen("home")}
+            onEarnCoins={(amount) => setCoins((c) => c + amount)}
+          />
         </div>
       )}
     </div>
