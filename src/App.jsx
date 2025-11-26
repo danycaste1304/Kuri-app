@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomizeScreen from "./CustomizeScreen";
 import ExpensesScreen from "./ExpensesScreen";
 import AdviceScreen from "./AdviceScreen";
@@ -6,26 +6,45 @@ import SavingsGoalScreen from "./SavingsGoalScreen";
 import OnboardingScreen from "./OnboardingScreen";
 import defaultPetImage from "./assets/Armadillo.png";
 import fondo1 from "./assets/Fondo1.png";
+import Sombrero from "./assets/sombrero.png"; // sombrero para equiparlo por defecto
 
 function App() {
   const [screen, setScreen] = useState("onboarding");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
-  const [accessory, setAccessory] = useState(null);
 
-  const [coins, setCoins] = useState(0);
+  // Sombrero gratis y equipado por defecto
+  const [accessory, setAccessory] = useState({
+    id: "sombrero",
+    label: "Sombrero",
+    img: Sombrero,
+  });
+
+  // Monedas iniciales para probar compras
+  const [coins, setCoins] = useState(120);
+
   // Mascotas que el usuario ya posee (armadillo y dragón gratis)
   const [ownedPets, setOwnedPets] = useState(["armadillo", "dragon"]);
-  // Accesorios que el usuario ya posee (empieza vacío)
-  const [ownedAccessories, setOwnedAccessories] = useState([]);
+
+  // Accesorios que el usuario ya posee (sombrero gratis por defecto)
+  const [ownedAccessories, setOwnedAccessories] = useState(["sombrero"]);
 
   const [userProfile, setUserProfile] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
 
-  // Notificación de gasto fuera de presupuesto (por ahora manual / futura lógica de "detección")
-  const [spendingAlert, setSpendingAlert] = useState(true); 
-  // Ponlo en true para probar el diseño:
-  // const [spendingAlert, setSpendingAlert] = useState(true);
+  // Notificación de gasto fuera de presupuesto
+  const [spendingAlert, setSpendingAlert] = useState(false);
+
+  // Mostrar la notificación 1 minuto después de entrar al HOME
+  useEffect(() => {
+    if (screen !== "home") return;
+
+    const timer = setTimeout(() => {
+      setSpendingAlert(true);
+    }, 60_000); // 60 segundos
+
+    return () => clearTimeout(timer);
+  }, [screen]);
 
   const accessoryStyles = {
     armadillo: {
@@ -135,15 +154,16 @@ function App() {
             </div>
           </header>
 
-          {/* NOTIFICACIÓN DE GASTO FUERA DE PRESUPUESTO */}
+          {/* NOTIFICACIÓN DE GASTO FUERA DE PRESUPUESTO (aparece tras 1 min) */}
           {spendingAlert && (
             <div className="px-4 md:px-8 mt-1">
               <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
                 <div className="text-xl pt-0.5">🐾</div>
                 <div className="flex-1">
                   <p className="text-xs md:text-sm text-amber-100">
-                    Oye, vi un gasto que se sale un poquito de tu presupuesto. A veces
-                    te mereces un gustito 💚, pero no te olvides de tu ahorro… ni de mí.
+                    Oye, vi un gasto que se sale un poquito de tu presupuesto.
+                    A veces te mereces un gustito 💚, pero no te olvides de tu
+                    ahorro… ni de mí.
                   </p>
                 </div>
                 <button
@@ -160,14 +180,13 @@ function App() {
           <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
             <div className="relative flex flex-col items-center w-full max-w-md flex-1">
               {/* BURBUJA DE TEXTO DE KURI */}
-              <div className="mt-2 mb-3 md:mt-4 md:mb-4 w-full flex justify-center px-3">
+              <div className="mt-3 mb-2 md:mt-4 md:mb-3 w-full flex justify-center px-3">
                 <div className="relative max-w-sm bg-slate-900/85 border border-emerald-400/40 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/20">
-                  {/* Colita de la burbuja apuntando hacia Kuri */}
-                  <div className="absolute -bottom-2 left-10 w-4 h-4 bg-slate-900/85 border-l border-b border-emerald-400/40 rotate-45" />
+                  {/* Colita centrada, apuntando hacia Kuri */}
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900/85 border-l border-b border-emerald-400/40 rotate-45" />
 
                   <h1 className="text-sm md:text-lg font-bold text-slate-50">
-                    Hola, soy{" "}
-                    <span className="text-emerald-300">Kuri</span> 🐾
+                    Hola, soy <span className="text-emerald-300">Kuri</span> 🐾
                   </h1>
                   <p className="mt-1 text-[11px] md:text-sm text-slate-200">
                     Estoy cuidando tus gastos para que puedas darte uno que otro
@@ -178,9 +197,9 @@ function App() {
 
               {/* ZONA ESCENARIO: MASCOTA SOBRE LA BASE */}
               <div className="relative w-full flex-1">
-                {/* Este wrapper ancla la mascota al fondo, centrada y sobre la base */}
-                <div className="absolute inset-x-0 bottom-[88px] md:bottom-[104px] flex justify-center">
-                  <div className="relative w-[260px] h-[300px] md:w-[360px] md:h-[400px] flex items-end justify-center">
+                {/* Wrapper anclado al fondo, centrado y usando rems */}
+                <div className="absolute inset-x-0 bottom-[5.8rem] md:bottom-[6.8rem] flex justify-center">
+                  <div className="relative w-[16rem] h-[19rem] md:w-[20rem] md:h-[22rem] flex items-end justify-center">
                     <img
                       src={petImageState}
                       alt="Mascota financiera"
@@ -261,7 +280,6 @@ function App() {
             ownedAccessories={ownedAccessories}
             onBack={() => setScreen("home")}
             onSelectPet={(petObj) => {
-              // Solo seleccionar (ya viene validado desde CustomizeScreen)
               setPetImageState(petObj.img);
               setCurrentPetId(petObj.id);
               setScreen("home");
@@ -277,7 +295,6 @@ function App() {
               setCoins((c) => c - petObj.price);
               setOwnedPets((prev) => [...prev, petObj.id]);
 
-              // Opcional: seleccionar la nueva mascota al comprarla
               setPetImageState(petObj.img);
               setCurrentPetId(petObj.id);
               setScreen("home");
@@ -297,7 +314,6 @@ function App() {
               setCoins((c) => c - acc.price);
               setOwnedAccessories((prev) => [...prev, acc.id]);
 
-              // Equipar accesorio recién comprado
               setAccessory(acc);
               setScreen("home");
             }}
