@@ -169,21 +169,22 @@ function App() {
           {/* MAIN */}
           <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
             <div className="relative flex flex-col items-center w-full max-w-md flex-1">
-              {/* 💬 BURBUJA DE TEXTO DE KURI – MÁS ABAJO */}
-              <div className="mt-8 md:mt-10 mb-2 md:mb-3 w-full flex justify-center px-3">
-                <div className="relative max-w-sm bg-slate-900/85 border border-emerald-400/40 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/20">
-                  {/* Colita centrada, apuntando hacia Kuri */}
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900/85 border-l border-b border-emerald-400/40 rotate-45" />
+              {/* 💬 BURBUJA DE TEXTO DE KURI – NUEVO DISEÑO */}
+                <div className="mt-10 md:mt-12 mb-2 w-full flex justify-center px-3 animate-fadeIn">
+                  <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                    
+                    {/* colita más curva y más bonita */}
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
 
-                  <h1 className="text-sm md:text-lg font-bold text-slate-50">
-                    Hola, soy <span className="text-emerald-300">Kuri</span> 🐾
-                  </h1>
-                  <p className="mt-1 text-[11px] md:text-sm text-slate-200">
-                    Estoy cuidando tus gastos para que puedas darte uno que otro
-                    gustito, sin olvidarte de tu ahorro… ni de mí.
-                  </p>
+                    <h1 className="text-base md:text-lg font-bold text-emerald-100">
+                      ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾
+                    </h1>
+
+                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
+                      Estoy revisando tus gastos… y prometo ayudarte para que puedas ahorrar sin dejar de disfrutar 💚.
+                    </p>
+                  </div>
                 </div>
-              </div>
 
               {/* ZONA ESCENARIO: MASCOTA SOBRE LA BASE */}
               <div className="relative w-full flex-1">
