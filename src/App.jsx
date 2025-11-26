@@ -5,6 +5,8 @@ import AdviceScreen from "./AdviceScreen";
 import SavingsGoalScreen from "./SavingsGoalScreen";
 import OnboardingScreen from "./OnboardingScreen";
 import defaultPetImage from "./assets/Armadillo.png";
+import fondo1 from "./assets/Fondo1.png";
+
 
 function App() {
   const [screen, setScreen] = useState("onboarding");
@@ -46,12 +48,13 @@ function App() {
     <div
       className="min-h-screen w-full bg-cover bg-center relative"
       style={{
-        backgroundImage: "url('/src/assets/Fondo1.png')",
+        backgroundImage: `url(${fondo1})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
+
       {/* ONBOARDING / REGISTRO */}
       {screen === "onboarding" && (
         <div className="min-h-screen w-full bg-black/70 flex items-center justify-center px-4">
