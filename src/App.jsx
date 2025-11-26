@@ -6,10 +6,11 @@ import SavingsGoalScreen from "./SavingsGoalScreen";
 import OnboardingScreen from "./OnboardingScreen";
 import defaultPetImage from "./assets/Armadillo.png";
 import fondo1 from "./assets/Fondo1.png";
+import SplashScreen from "./SplashScreen";
 import Sombrero from "./assets/sombrero.png"; // para tenerlo gratis (no equipado)
 
 function App() {
-  const [screen, setScreen] = useState("onboarding");
+  const [screen, setScreen] = useState("splash");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
@@ -103,6 +104,11 @@ function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
+      {/* SPLASH / PANTALLA INICIAL */}
+      {screen === "splash" && (
+        <SplashScreen onFinish={() => setScreen("onboarding")} />
+      )}
+
       {/* ONBOARDING / REGISTRO */}
       {screen === "onboarding" && (
         <div className="min-h-screen w-full bg-black/70 flex items-center justify-center px-4">
