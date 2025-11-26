@@ -3,18 +3,37 @@ import React, { useState } from "react";
 export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
   const [goal, setGoal] = useState("");
   const [saved, setSaved] = useState("");
+  const [weeklyAmount, setWeeklyAmount] = useState("");
+  const [weekHistory, setWeekHistory] = useState([]);
   const [rewardClaimed, setRewardClaimed] = useState(false);
 
   const numericGoal = parseFloat(goal) || 0;
   const numericSaved = parseFloat(saved) || 0;
+  const numericWeekly = parseFloat(weeklyAmount) || 0;
 
   const goalReached = numericGoal > 0 && numericSaved >= numericGoal;
-  const progress =
-    numericGoal > 0 ? Math.min((numericSaved / numericGoal) * 100, 120) : 0;
+  const progress = numericGoal > 0 ? (numericSaved / numericGoal) * 100 : 0;
+  const clampedProgress = Math.min(progress, 100); // para el tarrito
+
+  const handleAddWeek = () => {
+    if (!numericWeekly || numericWeekly <= 0) return;
+    const newSaved = numericSaved + numericWeekly;
+    setSaved(newSaved.toString());
+
+    setWeekHistory((prev) => [
+      ...prev,
+      {
+        week: prev.length + 1,
+        amount: numericWeekly,
+      },
+    ]);
+
+    setWeeklyAmount("");
+  };
 
   const handleClaimReward = () => {
     if (!goalReached || rewardClaimed) return;
-    // Por ejemplo 50 monedas
+    // Recompensa fija, por ejemplo 50 monedas
     onEarnCoins?.(50);
     setRewardClaimed(true);
   };
@@ -33,70 +52,168 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
       </div>
 
       <p className="text-sm md:text-base text-slate-200 mb-4">
-        Define cuánto quieres ahorrar y ve tu progreso. Cuando llegues a tu
-        objetivo, Kuri te dará moneditas para desbloquear nuevas mascotas y
-        accesorios. ✨
+        Kuri se conecta a tu banco (ficticiamente) para ayudarte a ver cuánto
+        estás ahorrando. Usa esta pantalla como tu{" "}
+        <span className="font-semibold text-emerald-300">
+          tarrito de ahorro semanal
+        </span>{" "}
+        y mira cómo se va llenando hasta cumplir tu meta. 💚
       </p>
 
-      {/* Formulario objetivo */}
-      <div className="bg-slate-900/75 border border-slate-700 rounded-2xl p-4 mb-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs text-slate-300 mb-1">
-              Monto objetivo (USD)
-            </label>
-            <input
-              type="number"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
-              placeholder="Ej: 200"
-            />
+      {/* Zona superior: objetivo + tarrito */}
+      <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr] gap-4 mb-5">
+        {/* Objetivo y montos */}
+        <div className="bg-slate-900/75 border border-slate-700 rounded-2xl p-4">
+          <h2 className="text-lg font-semibold mb-3">Configuración de objetivo</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs text-slate-300 mb-1">
+                Monto objetivo (USD)
+              </label>
+              <input
+                type="number"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+                className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
+                placeholder="Ej: 200"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-slate-300 mb-1">
+                Llevo ahorrado (USD)
+              </label>
+              <input
+                type="number"
+                value={saved}
+                onChange={(e) => setSaved(e.target.value)}
+                className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
+                placeholder="Ej: 80"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-xs text-slate-300 mb-1">
-              Llevo ahorrado (USD)
-            </label>
-            <input
-              type="number"
-              value={saved}
-              onChange={(e) => setSaved(e.target.value)}
-              className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
-              placeholder="Ej: 80"
-            />
+          {/* Progreso numérico */}
+          <div className="mt-4">
+            <div className="flex justify-between text-[11px] text-slate-300 mb-1">
+              <span>Progreso total</span>
+              <span>
+                {numericGoal > 0
+                  ? `${numericSaved.toFixed(2)} / ${numericGoal.toFixed(2)} USD`
+                  : "Define tu objetivo para empezar"}
+              </span>
+            </div>
+            <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+              <div
+                className={`h-full transition-all ${
+                  goalReached ? "bg-emerald-400" : "bg-emerald-500/80"
+                }`}
+                style={{ width: `${Math.min(progress, 120)}%` }}
+              />
+            </div>
+
+            {goalReached && (
+              <p className="mt-2 text-xs md:text-sm text-emerald-300">
+                🎉 ¡Felicitaciones! Alcanzaste tu objetivo de ahorro.
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Barra de progreso */}
-        <div className="mt-4">
-          <div className="flex justify-between text-[11px] text-slate-300 mb-1">
-            <span>Progreso</span>
-            <span>
-              {numericGoal > 0
-                ? `${numericSaved.toFixed(2)} / ${numericGoal.toFixed(2)} USD`
-                : "Define tu objetivo para empezar"}
-            </span>
-          </div>
-          <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
-            <div
-              className={`h-full transition-all ${
-                goalReached ? "bg-emerald-400" : "bg-emerald-500/80"
-              }`}
-              style={{ width: `${progress}%` }}
-            />
+        {/* Tarrito visual */}
+        <div className="bg-slate-900/75 border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center">
+          <h2 className="text-sm md:text-base font-semibold mb-2">
+            Tarrito de ahorro
+          </h2>
+          <p className="text-[11px] md:text-xs text-slate-300 text-center mb-3">
+            Imagina que cada dólar que ahorras se va a este tarrito.  
+            Mientras más ahorres, más se llena. 🫙
+          </p>
+
+          <div className="relative w-20 h-40 md:w-24 md:h-48 mx-auto my-2 flex items-end justify-center">
+            {/* Contorno del tarro */}
+            <div className="absolute inset-0 rounded-3xl border-2 border-emerald-300/80 bg-slate-950/60 overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+              {/* Líquido */}
+              <div
+                className={`absolute bottom-0 left-0 w-full transition-all duration-700 ${
+                  goalReached ? "bg-emerald-300" : "bg-emerald-400/90"
+                }`}
+                style={{ height: `${clampedProgress || 0}%` }}
+              />
+            </div>
+
+            {/* Tapita */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-3 md:w-16 md:h-3.5 rounded-t-xl bg-slate-200/90 border border-slate-400" />
           </div>
 
-          {goalReached && (
-            <p className="mt-2 text-xs md:text-sm text-emerald-300">
-              🎉 ¡Felicitaciones! Alcanzaste tu objetivo de ahorro.
-            </p>
-          )}
+          <p className="text-xs text-slate-200 mt-2">
+            {numericGoal > 0 ? (
+              <>
+                Has llenado{" "}
+                <span className="font-semibold text-emerald-300">
+                  {clampedProgress.toFixed(1)}%
+                </span>{" "}
+                de tu tarrito.
+              </>
+            ) : (
+              "Define un objetivo para empezar a llenar tu tarrito."
+            )}
+          </p>
         </div>
       </div>
 
+      {/* Ahorro semanal */}
+      <div className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 mb-5">
+        <h2 className="text-lg font-semibold mb-2">Ahorro semana a semana</h2>
+        <p className="text-xs md:text-sm text-slate-200 mb-3">
+          Cada semana, cuando veas tus movimientos del banco, registra cuánto
+          lograste ahorrar. Así Kuri puede motivarte con tu progreso real. ✨
+        </p>
+
+        <div className="flex flex-col md:flex-row md:items-end gap-3 mb-3">
+          <div className="md:flex-1">
+            <label className="block text-xs text-slate-300 mb-1">
+              Ahorro de esta semana (USD)
+            </label>
+            <input
+              type="number"
+              value={weeklyAmount}
+              onChange={(e) => setWeeklyAmount(e.target.value)}
+              className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
+              placeholder="Ej: 10"
+            />
+          </div>
+
+          <button
+            onClick={handleAddWeek}
+            className="md:w-auto w-full px-4 py-2 rounded-xl bg-emerald-400 text-slate-900 text-sm font-semibold hover:bg-emerald-300 transition"
+          >
+            Añadir a mi tarrito
+          </button>
+        </div>
+
+        {weekHistory.length > 0 && (
+          <div className="mt-2">
+            <p className="text-xs text-slate-300 mb-1">
+              Historial reciente de ahorro:
+            </p>
+            <ul className="text-[11px] text-slate-200 max-h-24 overflow-y-auto pr-1">
+              {weekHistory
+                .slice()
+                .reverse()
+                .map((w) => (
+                  <li key={w.week}>
+                    Semana {w.week}: +${w.amount.toFixed(2)}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
       {/* Recompensa de monedas */}
-      <div className="bg-slate-900/75 border border-emerald-500/40 rounded-2xl p-4 mb-5">
+      <div className="bg-slate-900/80 border border-emerald-500/40 rounded-2xl p-4 mb-5">
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">
@@ -106,7 +223,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
             <p className="text-xs md:text-sm text-slate-200 mt-1">
               Al cumplir tu objetivo puedes reclamar{" "}
               <span className="font-semibold text-amber-300">50 moneditas</span>{" "}
-              para desbloquear mascotas y accesorios.
+              para desbloquear nuevas mascotas y accesorios.
             </p>
           </div>
 
@@ -126,7 +243,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
       </div>
 
       {/* Crear tu propia mascota / IA */}
-      <div className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 flex-1">
+      <div className="bg-slate-900/85 border border-slate-700 rounded-2xl p-4 flex-1">
         <h2 className="text-lg font-semibold mb-2">
           Crea tu propia mascota virtual
         </h2>
