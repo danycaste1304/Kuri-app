@@ -142,51 +142,43 @@ function App() {
           </main>
 
           {/* BOTONES INFERIORES */}
-          <nav className="w-full px-4 pb-4 pt-2 md:px-6 md:pb-6 md:pt-3 flex justify-center">
-            <div className="bg-slate-900/85 border border-slate-700 rounded-3xl px-3 py-2 flex gap-3 md:gap-6">
-              {/* Gastos */}
-              <button
-                onClick={() => setScreen("expenses")}
-                className="flex flex-col items-center text-[10px] md:text-sm text-slate-200 hover:text-emerald-300"
-              >
-                <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
-                  <span className="text-lg md:text-2xl">❤️</span>
-                </div>
-                Gastos
-              </button>
-
-              {/* Consejos */}
-              <button
-                onClick={() => setScreen("advice")}
-                className="flex flex-col items-center text-[10px] md:text-sm text-slate-200 hover:text-emerald-300"
-              >
-                <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
-                  <span className="text-lg md:text-2xl">💡</span>
-                </div>
-                Consejos
-              </button>
-
-              {/* Tu objetivo */}
-              <button
-                onClick={() => setScreen("savings")}
-                className="flex flex-col items-center text-[10px] md:text-sm text-slate-200 hover:text-emerald-300"
-              >
-                <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
-                  <span className="text-lg md:text-2xl">🎯</span>
-                </div>
-                Tu objetivo
-              </button>
-
-              {/* Mascota */}
-              <button
-                className="flex flex-col items-center text-[10px] md:text-sm text-slate-200 hover:text-emerald-300"
-                onClick={() => setScreen("customize")}
-              >
-                <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
-                  <span className="text-lg md:text-2xl">🐾</span>
-                </div>
-                Mascota
-              </button>
+          <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
+            <div className="bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex gap-5 md:gap-8 shadow-lg backdrop-blur-md">
+              
+              {/* Botón genérico (reutilizable) */}
+              {[
+                {
+                  label: "Gastos",
+                  icon: "❤️",
+                  action: () => setScreen("expenses"),
+                },
+                {
+                  label: "Consejos",
+                  icon: "💡",
+                  action: () => setScreen("advice"),
+                },
+                {
+                  label: "Tu objetivo",
+                  icon: "🎯",
+                  action: () => setScreen("savings"),
+                },
+                {
+                  label: "Mascota",
+                  icon: "🐾",
+                  action: () => setScreen("customize"),
+                },
+              ].map((btn) => (
+                <button
+                  key={btn.label}
+                  onClick={btn.action}
+                  className="flex flex-col items-center text-xs md:text-base text-slate-200 hover:text-emerald-300 transition"
+                >
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
+                    <span className="text-xl md:text-3xl">{btn.icon}</span>
+                  </div>
+                  {btn.label}
+                </button>
+              ))}
             </div>
           </nav>
         </div>
