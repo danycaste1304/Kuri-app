@@ -12,68 +12,71 @@ function App() {
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
   const [accessory, setAccessory] = useState(null);
-  const [coins, setCoins] = useState(0);
 
+  const [coins, setCoins] = useState(0);
   // Mascotas que el usuario ya posee (armadillo y dragón gratis)
   const [ownedPets, setOwnedPets] = useState(["armadillo", "dragon"]);
   // Accesorios que el usuario ya posee (empieza vacío)
   const [ownedAccessories, setOwnedAccessories] = useState([]);
 
-
   const [userProfile, setUserProfile] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
 
+  // Notificación de gasto fuera de presupuesto (por ahora manual / futura lógica de "detección")
+  const [spendingAlert, setSpendingAlert] = useState(true); 
+  // Ponlo en true para probar el diseño:
+  // const [spendingAlert, setSpendingAlert] = useState(true);
+
   const accessoryStyles = {
-  armadillo: {
-    diadema:  { top: "200px", width: "200px", transform: "translateX(-65px)" },
-    sombrero: { top: "190px", width: "190px" },
-    lazo:     { top: "210px", width: "150px" },
-    guitarra: { top: "380px", width: "190px", transform: "translateX(-50px)" },
-  },
+    armadillo: {
+      diadema: { top: "200px", width: "200px", transform: "translateX(-65px)" },
+      sombrero: { top: "190px", width: "190px" },
+      lazo: { top: "210px", width: "150px" },
+      guitarra: { top: "380px", width: "190px", transform: "translateX(-50px)" },
+    },
 
-  conejo: {
-    diadema:  { top: "240px", width: "190px", transform: "translateX(-60px)" },
-    sombrero: { top: "210px", width: "180px" },
-    lazo:     { top: "255px", width: "140px" },
-    guitarra: { top: "400px", width: "190px", transform: "translateX(-35px)" },
-  },
+    conejo: {
+      diadema: { top: "240px", width: "190px", transform: "translateX(-60px)" },
+      sombrero: { top: "210px", width: "180px" },
+      lazo: { top: "255px", width: "140px" },
+      guitarra: { top: "400px", width: "190px", transform: "translateX(-35px)" },
+    },
 
-  buho: {
-    diadema:  { top: "180px", width: "160px" },
-    sombrero: { top: "160px", width: "170px" },
-    lazo:     { top: "200px", width: "130px" },
-    guitarra: { top: "340px", width: "180px", transform: "translateX(-40px)" },
-  },
+    buho: {
+      diadema: { top: "180px", width: "160px" },
+      sombrero: { top: "160px", width: "170px" },
+      lazo: { top: "200px", width: "130px" },
+      guitarra: { top: "340px", width: "180px", transform: "translateX(-40px)" },
+    },
 
-  dragon: {
-    diadema:  { top: "210px", width: "200px" },
-    sombrero: { top: "200px", width: "190px" },
-    lazo:     { top: "240px", width: "150px" },
-    guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
-  },
+    dragon: {
+      diadema: { top: "210px", width: "200px" },
+      sombrero: { top: "200px", width: "190px" },
+      lazo: { top: "240px", width: "150px" },
+      guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
+    },
 
-  cerdito: {
-    diadema:  { top: "220px", width: "160px" },
-    sombrero: { top: "200px", width: "170px" },
-    lazo:     { top: "250px", width: "130px" },
-    guitarra: { top: "360px", width: "170px", transform: "translateX(-40px)" },
-  },
+    cerdito: {
+      diadema: { top: "220px", width: "160px" },
+      sombrero: { top: "200px", width: "170px" },
+      lazo: { top: "250px", width: "130px" },
+      guitarra: { top: "360px", width: "170px", transform: "translateX(-40px)" },
+    },
 
-  zorro: {
-    diadema:  { top: "210px", width: "170px" },
-    sombrero: { top: "190px", width: "180px" },
-    lazo:     { top: "235px", width: "140px" },
-    guitarra: { top: "370px", width: "180px", transform: "translateX(-45px)" },
-  },
+    zorro: {
+      diadema: { top: "210px", width: "170px" },
+      sombrero: { top: "190px", width: "180px" },
+      lazo: { top: "235px", width: "140px" },
+      guitarra: { top: "370px", width: "180px", transform: "translateX(-45px)" },
+    },
 
-  default: {
-    diadema:  { top: "220px", width: "170px" },
-    sombrero: { top: "210px", width: "180px" },
-    lazo:     { top: "255px", width: "140px" },
-    guitarra: { top: "285px", width: "180px" },
-  },
-};
-
+    default: {
+      diadema: { top: "220px", width: "170px" },
+      sombrero: { top: "210px", width: "180px" },
+      lazo: { top: "255px", width: "140px" },
+      guitarra: { top: "285px", width: "180px" },
+    },
+  };
 
   const displayName = userProfile?.name || "Usuario";
   const initials = displayName.charAt(0).toUpperCase();
@@ -130,25 +133,47 @@ function App() {
                 {coins}
               </span>
             </div>
-
           </header>
+
+          {/* NOTIFICACIÓN DE GASTO FUERA DE PRESUPUESTO */}
+          {spendingAlert && (
+            <div className="px-4 md:px-8 mt-1">
+              <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
+                <div className="text-xl pt-0.5">🐾</div>
+                <div className="flex-1">
+                  <p className="text-xs md:text-sm text-amber-100">
+                    Oye, vi un gasto que se sale un poquito de tu presupuesto. A veces
+                    te mereces un gustito 💚, pero no te olvides de tu ahorro… ni de mí.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSpendingAlert(false)}
+                  className="ml-2 text-[11px] text-amber-200/80 hover:text-amber-100"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* MAIN */}
           <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
             <div className="relative flex flex-col items-center w-full max-w-md flex-1">
-              {/* TEXTO ARRIBA */}
-              <div className="mt-2 mb-3 md:mt-4 md:mb-4 text-center px-3">
-                <h1 className="text-xl md:text-3xl font-bold text-slate-50 leading-tight">
-                  Hola, soy{" "}
-                  <span className="text-emerald-300 drop-shadow-[0_0_10px_rgba(0,0,0,0.9)]">
-                    Kuri
-                  </span>{" "}
-                  🐾
-                </h1>
-                <p className="mt-2 text-xs md:text-base text-slate-200">
-                  Tu mascota financiera. Estoy aquí para ayudarte a cuidar tu
-                  dinero, tus metas y tus hábitos, todos los días.
-                </p>
+              {/* BURBUJA DE TEXTO DE KURI */}
+              <div className="mt-2 mb-3 md:mt-4 md:mb-4 w-full flex justify-center px-3">
+                <div className="relative max-w-sm bg-slate-900/85 border border-emerald-400/40 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/20">
+                  {/* Colita de la burbuja apuntando hacia Kuri */}
+                  <div className="absolute -bottom-2 left-10 w-4 h-4 bg-slate-900/85 border-l border-b border-emerald-400/40 rotate-45" />
+
+                  <h1 className="text-sm md:text-lg font-bold text-slate-50">
+                    Hola, soy{" "}
+                    <span className="text-emerald-300">Kuri</span> 🐾
+                  </h1>
+                  <p className="mt-1 text-[11px] md:text-sm text-slate-200">
+                    Estoy cuidando tus gastos para que puedas darte uno que otro
+                    gustito, sin olvidarte de tu ahorro… ni de mí.
+                  </p>
+                </div>
               </div>
 
               {/* ZONA ESCENARIO: MASCOTA SOBRE LA BASE */}
@@ -187,8 +212,6 @@ function App() {
           {/* BOTONES INFERIORES */}
           <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
             <div className="bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex gap-5 md:gap-8 shadow-lg backdrop-blur-md">
-              
-              {/* Botón genérico (reutilizable) */}
               {[
                 {
                   label: "Gastos",
@@ -281,7 +304,6 @@ function App() {
           />
         </div>
       )}
-
 
       {/* RESUMEN DE GASTOS */}
       {screen === "expenses" && (
