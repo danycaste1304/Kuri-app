@@ -1,7 +1,7 @@
 import React from "react";
 
-// 👇 importa las portadas de TikTok
-import TikTok1 from "./assets/tiktok1.png";
+// importa las portadas de TikTok
+import TikTok1 from "./assets/tiktok1.png"; // usa ../assets si AdviceScreen.jsx está en una subcarpeta
 import TikTok2 from "./assets/tiktok2.png";
 import TikTok3 from "./assets/tiktok3.png";
 
@@ -29,7 +29,6 @@ export default function AdviceScreen({ onBack }) {
     },
   ];
 
-  // TikToks recomendados (ahora usando los imports)
   const tiktoks = [
     { id: "t1", img: TikTok1, url: "https://vm.tiktok.com/ZMAwqVhJv/" },
     { id: "t2", img: TikTok2, url: "https://vm.tiktok.com/ZMAwqB8PQ/" },
@@ -51,6 +50,20 @@ export default function AdviceScreen({ onBack }) {
       </button>
 
       <h1 className="text-2xl font-bold mb-6">Consejos financieros</h1>
+
+      {/* DEBUG: ver si tiktok1.png se carga */}
+      <div className="mb-4 p-2 rounded-xl bg-slate-900/70 border border-slate-700">
+        <p className="text-[11px] text-slate-300 mb-1">
+          Preview de portada TikTok #1 (solo para probar):
+        </p>
+        <div className="w-32 h-20 bg-slate-800 rounded-lg overflow-hidden">
+          <img
+            src={TikTok1}
+            alt="Debug TikTok1"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
 
       {/* Consejo del día */}
       <div className="bg-slate-900/80 p-5 rounded-2xl mb-6 border border-slate-700">
