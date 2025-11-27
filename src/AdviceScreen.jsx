@@ -1,13 +1,18 @@
 import React from "react";
 
-export default function AdviceScreen({ onBack }) {
+// 👇 importa las portadas de TikTok
+import TikTok1 from "./assets/tiktok1.png";
+import TikTok2 from "./assets/tiktok2.png";
+import TikTok3 from "./assets/tiktok3.png";
 
+export default function AdviceScreen({ onBack }) {
   const consejos = [
     {
       id: 1,
       titulo: "Elimina gastos hormiga",
       texto: "Pequeñas compras diarias pueden sumar más de $600 al año.",
-      tiktok: "https://www.tiktok.com/@isaacenc/video/7576071371243916552?is_from_webapp=1&sender_device=pc&web_id=7576874939774715403",
+      tiktok:
+        "https://www.tiktok.com/@isaacenc/video/7576071371243916552?is_from_webapp=1&sender_device=pc&web_id=7576874939774715403",
     },
     {
       id: 2,
@@ -19,20 +24,24 @@ export default function AdviceScreen({ onBack }) {
       id: 3,
       titulo: "Crea un fondo de emergencia",
       texto: "Ten al menos 3 meses de gastos básicos.",
-      tiktok: "https://www.tiktok.com/@angiecoachdeahorro/video/7538073902702955798?is_from_webapp=1&sender_device=pc&web_id=7576874939774715403",
+      tiktok:
+        "https://www.tiktok.com/@angiecoachdeahorro/video/7538073902702955798?is_from_webapp=1&sender_device=pc&web_id=7576874939774715403",
     },
   ];
 
-  // TikToks recomendados
+  // TikToks recomendados (ahora usando los imports)
   const tiktoks = [
-    { id: "t1", img: "/src/assets/tiktok1.png", url: "https://vm.tiktok.com/ZMAwqVhJv/" },
-    { id: "t2", img: "/src/assets/tiktok2.png", url: "https://vm.tiktok.com/ZMAwqB8PQ/" },
-    { id: "t3", img: "/src/assets/tiktok3.png", url: "https://www.tiktok.com/@luisminegocios/video/7265508975150484742?is_from_webapp=1&sender_device=pc&web_id=7576874939774715403" },
+    { id: "t1", img: TikTok1, url: "https://vm.tiktok.com/ZMAwqVhJv/" },
+    { id: "t2", img: TikTok2, url: "https://vm.tiktok.com/ZMAwqB8PQ/" },
+    {
+      id: "t3",
+      img: TikTok3,
+      url: "https://www.tiktok.com/@luisminegocios/video/7265508975150484742?is_from_webapp=1&sender_device=pc&web_id=7576874939774715403",
+    },
   ];
 
   return (
     <div className="min-h-screen px-6 py-6 text-white">
-      
       {/* Volver */}
       <button
         onClick={onBack}
@@ -69,6 +78,7 @@ export default function AdviceScreen({ onBack }) {
             <a
               href={c.tiktok}
               target="_blank"
+              rel="noreferrer"
               className="text-emerald-400 text-sm mt-3 inline-block hover:underline"
             >
               Ver TikTok relacionado →
@@ -86,9 +96,14 @@ export default function AdviceScreen({ onBack }) {
             key={t.id}
             href={t.url}
             target="_blank"
+            rel="noreferrer"
             className="min-w-[120px] h-[150px] bg-slate-800 rounded-xl overflow-hidden border border-slate-700"
           >
-            <img src={t.img} alt="" className="w-full h-full object-cover" />
+            <img
+              src={t.img}
+              alt="TikTok recomendado"
+              className="w-full h-full object-cover"
+            />
           </a>
         ))}
       </div>
