@@ -50,7 +50,7 @@ function App() {
       sombrero: {
         top: "40px",                // NUEVO: subido a la cabeza
         width: "150px",             // NUEVO: tamaño más natural
-        transform: "translateX(-90px)" // NUEVO: centrado sobre la cabeza
+        transform: "translateX(-100px)" // NUEVO: centrado sobre la cabeza
       },
 
       lazo:     { top: "210px", width: "150px" },
