@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import logo from "./assets/kuri-logo.png"; 
+import logo from "./assets/kuri-logo.jpeg"; 
 // 👆 Cambia el nombre si tu logo se llama distinto (por ejemplo LogoKuri.png)
 
 export default function SplashScreen({ onFinish }) {
@@ -38,9 +38,9 @@ export default function SplashScreen({ onFinish }) {
 
           {/* Explicación cortita */}
           <p className="mt-4 text-xs md:text-sm text-slate-200 max-w-sm leading-relaxed">
-            Kuri se conecta a tus gastos (ficticiamente 😉) para ayudarte a ahorrar
-            poquito a poquito, celebrar tus logros y recordarte que cuides tu dinero
-            como cuidarías a una mascota.
+            Kuriapp es una app financiera inteligente que se conecta con tu banco para mostrarte en qué gastas y 
+            cómo puedes mejorar. A través de una mascota que evoluciona contigo, recibirás objetivos semanales, 
+            consejos y una experiencia que hace el ahorro más emocionante.
           </p>
 
           {/* Indicador de “cargando” */}
