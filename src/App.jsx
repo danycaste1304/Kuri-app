@@ -10,7 +10,7 @@ import SplashScreen from "./SplashScreen";
 import Sombrero from "./assets/sombrero.png"; // para tenerlo gratis (no equipado)
 
 function App() {
-  const [screen, setScreen] = useState("home");
+  const [screen, setScreen] = useState("splash");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
@@ -56,7 +56,7 @@ function App() {
       lazo:     { top: "40px",                // NUEVO: subido a la cabeza
         width: "100px",             // NUEVO: tamaño más natural
         transform: "translateX(-60px)"},
-      guitarra: { top: "180px",                // NUEVO: subido a la cabeza
+      guitarra: { top: "10px",                // NUEVO: subido a la cabeza
         width: "170px",             // NUEVO: tamaño más natural
         transform: "translateX(-60px)" },
     },
