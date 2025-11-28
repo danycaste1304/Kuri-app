@@ -48,7 +48,7 @@ function App() {
       diadema:  { top: "200px", width: "200px", transform: "translateX(-65px)" },
 
       sombrero: {
-        top: "30px",                // NUEVO: subido a la cabeza
+        top: "10px",                // NUEVO: subido a la cabeza
         width: "150px",             // NUEVO: tamaño más natural
         transform: "translateX(-100px)" // NUEVO: centrado sobre la cabeza
       },
