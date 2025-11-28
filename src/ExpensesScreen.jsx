@@ -2,21 +2,23 @@ import React from "react";
 
 export default function ExpensesScreen({ onBack }) {
   // 💸 Datos de ejemplo pensados para estudiante universitario
-  const monthlyBudget = 250; // presupuesto mensual
+  const monthlyBudget = 250; // presupuesto mensual total en Kuri (USD)
+
+  // Estas categorías suman exactamente 250 USD
   const categories = [
-    { id: "food", label: "Comida y snacks", emoji: "🍕", amount: 100.5, color: "#34d399" },
-    { id: "transport", label: "Transporte", emoji: "🚌", amount: 50, color: "#22c55e" },
-    { id: "fun", label: "Salidas y ocio", emoji: "🎉", amount: 55, color: "#a3e635" },
-    { id: "apps", label: "Apps y suscripciones", emoji: "📱", amount: 10.3, color: "#facc15" },
-    { id: "uni", label: "Universidad (copias, materiales)", emoji: "📚", amount: 34.2, color: "#f97316" },
+    { id: "food",      label: "Comida y snacks",           emoji: "🍕", amount: 100.5, color: "#34d399" },
+    { id: "transport", label: "Transporte",                emoji: "🚌", amount: 50,    color: "#22c55e" },
+    { id: "fun",       label: "Salidas y ocio",           emoji: "🎉", amount: 55,    color: "#a3e635" },
+    { id: "apps",      label: "Apps y suscripciones",      emoji: "📱", amount: 10.3, color: "#facc15" },
+    { id: "uni",       label: "Universidad (copias, materiales)", emoji: "📚", amount: 34.2, color: "#f97316" },
   ];
 
   const totalSpent = categories.reduce((sum, c) => sum + c.amount, 0);
   const remaining = monthlyBudget - totalSpent;
   const percentUsed = Math.round((totalSpent / monthlyBudget) * 100);
 
-  // 🎯 Modelo simple de ahorro sugerido: ~13% del presupuesto
-  const suggestedSaving = Math.round(monthlyBudget * 0.13); // ≈ 60 USD
+  // 🎯 Modelo simple de ahorro sugerido: 20% del presupuesto
+  const suggestedSaving = Math.round(monthlyBudget * 0.2); // 50 USD si el presupuesto es 250
   const weeklySaving = Math.round((suggestedSaving / 4) * 10) / 10; // ahorro semanal aprox.
 
   // Donut chart segments
@@ -43,9 +45,15 @@ export default function ExpensesScreen({ onBack }) {
         ← Volver
       </button>
 
-      <h1 className="text-2xl md:text-3xl font-bold mb-2">
+      <h1 className="text-2xl md:text-3xl font-bold mb-1">
         Resumen de gastos
       </h1>
+      <p className="text-[11px] md:text-xs text-slate-400 mb-1">
+        Presupuesto mensual configurado en Kuri:{" "}
+        <span className="font-semibold text-emerald-300">
+          ${monthlyBudget.toFixed(2)}
+        </span>
+      </p>
       <p className="text-xs md:text-sm text-slate-300 mb-5">
         Así se está moviendo tu plata este mes 💸
       </p>
@@ -71,8 +79,10 @@ export default function ExpensesScreen({ onBack }) {
                 remaining >= 0 ? "text-emerald-300" : "text-red-300"
               }`}
             >
-              {remaining >= 0
+              {remaining > 0
                 ? `Te quedan $${remaining.toFixed(2)}`
+                : remaining === 0
+                ? "Has usado el 100% de tu presupuesto"
                 : `Te pasaste $${Math.abs(remaining).toFixed(2)}`}
             </p>
           </div>
@@ -89,7 +99,7 @@ export default function ExpensesScreen({ onBack }) {
               className={`h-full ${
                 percentUsed <= 80 ? "bg-emerald-400" : "bg-red-400"
               } transition-all`}
-              style={{ width: `${Math.min(percentUsed, 100)}%` }}
+              style={{ width: `${Math.min(percentUsed, 110)}%` }}
             />
           </div>
         </div>
@@ -210,15 +220,15 @@ export default function ExpensesScreen({ onBack }) {
         <p className="text-slate-400 text-[12px] md:text-sm">
           Ideas concretas:
           <br />• Bajar{" "}
-          <span className="text-emerald-200">~$15</span> en{" "}
+          <span className="text-emerald-200">~$20</span> en{" "}
           <span className="text-slate-200">Comida y snacks</span> (llevar algo
           de casa).
           <br />• Reducir{" "}
-          <span className="text-emerald-200">~$15–20</span> en{" "}
+          <span className="text-emerald-200">~$20</span> en{" "}
           <span className="text-slate-200">Salidas y ocio</span>.
           <br />• Revisar{" "}
           <span className="text-slate-200">suscripciones</span> y cancelar una
-          o dos apps que no uses (ahorrar{" "}
+          app que no uses (ahorrar{" "}
           <span className="text-emerald-200">~$10</span>).
         </p>
       </div>
