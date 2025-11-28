@@ -73,7 +73,9 @@ function App() {
     },
     dragon: {
       diadema: { top: "210px", width: "200px" },
-      sombrero: { top: "200px", width: "190px" },
+      sombrero: { top: "10px",                // NUEVO: subido a la cabeza
+        width: "150px",             // NUEVO: tamaño más natural
+        transform: "translateX(-100px)" },
       lazo: { top: "240px", width: "150px" },
       guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
     },
