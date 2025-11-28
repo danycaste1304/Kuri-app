@@ -17,7 +17,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
 
   // Meta semanal sugerida: repartimos el objetivo en 12 meses * 4 semanas
   const weeklyTarget =
-    numericGoal > 0 ? numericGoal / (12 * 4) : 0; // muy aproximado, pero suficiente para un MVP
+    numericGoal > 0 ? numericGoal / (6 * 4) : 0; // muy aproximado, pero suficiente para un MVP
 
   // Ahorro "simulado" acumulado según semanas cumplidas
   const approximateSaved = weeksCompleted * weeklyTarget;
@@ -56,7 +56,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
       </div>
 
       <p className="text-sm md:text-base text-slate-200 mb-4">
-        Kuri analiza (ficticiamente) tus gastos del banco y te propone un{" "}
+        Kuri analiza tus gastos del banco y te propone un{" "}
         <span className="font-semibold text-emerald-300">
           objetivo de ahorro a largo plazo
         </span>{" "}
@@ -84,10 +84,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
                 className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
                 placeholder="Ej: 300"
               />
-              <p className="mt-1 text-[11px] text-slate-400">
-                En la versión real, este valor vendría de tu comportamiento de
-                gasto.
-              </p>
+              
             </div>
 
             <div>
@@ -110,7 +107,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
                 )}
               </div>
               <p className="mt-1 text-[11px] text-slate-400">
-                Calculada a partir de tu objetivo anual para que sea alcanzable.
+                Calculada a partir de tu objetivo semestral para que sea alcanzable.
               </p>
             </div>
           </div>
@@ -281,7 +278,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
           Crea tu propia mascota virtual
         </h2>
         <p className="text-xs md:text-sm text-slate-200 mb-3">
-          Cuando mantienes tu ahorro y cumples el objetivo de Kuri, desbloqueas
+          Cuando mantienes tu ahorro y cumples el objetivo anual de Kuri, desbloqueas
           la opción de crear una mascota única. Puedes diseñarla tú mismo o
           generar ideas con inteligencia artificial. 💡
         </p>
