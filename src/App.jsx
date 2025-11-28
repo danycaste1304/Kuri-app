@@ -77,8 +77,8 @@ function App() {
         width: "150px",             // NUEVO: tamaño más natural
         transform: "translateX(-100px)" },
       lazo: {  top: "5px",                // NUEVO: subido a la cabeza
-        width: "150px",             // NUEVO: tamaño más natural
-        transform: "translateX(-100px)" },
+        width: "100px",             // NUEVO: tamaño más natural
+        transform: "translateX(-90px)" },
       guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
     },
     cerdito: {
