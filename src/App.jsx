@@ -76,7 +76,7 @@ function App() {
       sombrero: { top: "-5px",                // NUEVO: subido a la cabeza
         width: "150px",             // NUEVO: tamaño más natural
         transform: "translateX(-100px)" },
-      lazo: {  top: "15px",                // NUEVO: subido a la cabeza
+      lazo: {  top: "20px",                // NUEVO: subido a la cabeza
         width: "100px",             // NUEVO: tamaño más natural
         transform: "translateX(-80px)" },
       guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
