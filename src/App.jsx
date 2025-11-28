@@ -10,7 +10,7 @@ import SplashScreen from "./SplashScreen";
 import Sombrero from "./assets/sombrero.png"; // para tenerlo gratis (no equipado)
 
 function App() {
-  const [screen, setScreen] = useState("home");
+  const [screen, setScreen] = useState("splash");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
