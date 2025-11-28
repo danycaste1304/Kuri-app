@@ -59,7 +59,9 @@ function App() {
 
     conejo: {
       diadema: { top: "240px", width: "190px", transform: "translateX(-60px)" },
-      sombrero: { top: "210px", width: "180px" },
+      sombrero: { top: "10px",                // NUEVO: subido a la cabeza
+        width: "150px",             // NUEVO: tamaño más natural
+        transform: "translateX(-100px)"},
       lazo: { top: "255px", width: "140px" },
       guitarra: { top: "400px", width: "190px", transform: "translateX(-35px)" },
     },
