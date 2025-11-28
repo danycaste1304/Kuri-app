@@ -53,9 +53,9 @@ function App() {
         transform: "translateX(-100px)" // NUEVO: centrado sobre la cabeza
       },
 
-      lazo:     { top: "60px",                // NUEVO: subido a la cabeza
+      lazo:     { top: "50px",                // NUEVO: subido a la cabeza
         width: "100px",             // NUEVO: tamaño más natural
-        transform: "translateX(-80px)"},
+        transform: "translateX(-70px)"},
       guitarra: { top: "380px", width: "190px", transform: "translateX(-50px)" },
     },
 
