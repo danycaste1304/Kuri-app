@@ -56,9 +56,9 @@ function App() {
       lazo:     { top: "40px",                // NUEVO: subido a la cabeza
         width: "100px",             // NUEVO: tamaño más natural
         transform: "translateX(-60px)"},
-      guitarra: { top: "100px",                // NUEVO: subido a la cabeza
-        width: "100px",             // NUEVO: tamaño más natural
-        transform: "translateX(-80px)" },
+      guitarra: { top: "200px",                // NUEVO: subido a la cabeza
+        width: "200px",             // NUEVO: tamaño más natural
+        transform: "translateX(-50px)" },
     },
 
     conejo: {
