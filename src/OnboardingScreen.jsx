@@ -22,7 +22,7 @@ export default function OnboardingScreen({ onComplete }) {
         Bienvenido a <span className="text-emerald-300">Kuri</span> 🐾
       </h1>
       <p className="text-xs md:text-sm text-slate-200 mb-5">
-        Vinculamos (de forma ficticia) tu banco para que Kuri pueda entender tus
+        Vinculamos tu banco para que Kuri pueda entender tus
         gastos, proponerte un objetivo de ahorro y celebrar tus avances semana a semana.
       </p>
 
@@ -35,7 +35,7 @@ export default function OnboardingScreen({ onComplete }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ej: Dani, Jorge..."
+          placeholder="Ej: Dani, Santi..."
           className="w-full rounded-xl bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
         />
       </div>
@@ -43,7 +43,7 @@ export default function OnboardingScreen({ onComplete }) {
       {/* Banco ficticio */}
       <div className="mb-4">
         <label className="block text-xs text-slate-300 mb-1">
-          Banco vinculado (demo)
+          Banco vinculado
         </label>
         <select
           value={bankName}
@@ -60,7 +60,7 @@ export default function OnboardingScreen({ onComplete }) {
       {/* Últimos 4 dígitos ficticios */}
       <div className="mb-6">
         <label className="block text-xs text-slate-300 mb-1">
-          Últimos 4 dígitos (solo demo)
+          Últimos 4 dígitos
         </label>
         <input
           type="text"
@@ -71,9 +71,6 @@ export default function OnboardingScreen({ onComplete }) {
           }
           className="w-full rounded-xl bg-slate-900 border border-slate-700 px-3 py-2 text-sm tracking-[0.3em] text-center focus:outline-none focus:border-emerald-400"
         />
-        <p className="mt-1 text-[10px] text-slate-400">
-          No conectamos bancos reales, es solo para que la experiencia se sienta auténtica.
-        </p>
       </div>
 
       {/* Botón principal */}
@@ -102,11 +99,6 @@ export default function OnboardingScreen({ onComplete }) {
         <span>Ingresar con mi cuenta / biométricos</span>
         <span className="text-[10px] text-emerald-300/80">(demo)</span>
       </button>
-
-      <p className="mt-3 text-[10px] text-slate-500 text-center">
-        En una versión real podrías iniciar sesión con huella, Face ID o usuario
-        y contraseña. Aquí solo simulamos la experiencia visual.
-      </p>
     </div>
   );
 }

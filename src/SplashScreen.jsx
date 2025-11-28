@@ -6,7 +6,7 @@ export default function SplashScreen({ onFinish }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onFinish?.();
-    }, 20000); // 20 segundos. Para probar, puedes bajarlo a 3000 (3 s)
+    }, 15000); // 20 segundos. Para probar, puedes bajarlo a 3000 (3 s)
 
     return () => clearTimeout(timer);
   }, [onFinish]);
@@ -24,7 +24,7 @@ export default function SplashScreen({ onFinish }) {
             <img
               src={logo}
               alt="Kuri – Tu mascota financiera"
-              className="w-24 h-24 md:w-28 md:h-28 object-contain"
+              className="w-24 h-24 md:w-28 md:h-28 object-cover rounded-full"
             />
           </div>
 
