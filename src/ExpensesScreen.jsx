@@ -2,13 +2,13 @@ import React from "react";
 
 export default function ExpensesScreen({ onBack }) {
   // 💸 Datos de ejemplo pensados para estudiante universitario
-  const monthlyBudget = 450; // presupuesto mensual
+  const monthlyBudget = 250; // presupuesto mensual
   const categories = [
-    { id: "food", label: "Comida y snacks", emoji: "🍕", amount: 135.5, color: "#34d399" },
-    { id: "transport", label: "Transporte", emoji: "🚌", amount: 60, color: "#22c55e" },
-    { id: "fun", label: "Salidas y ocio", emoji: "🎉", amount: 75, color: "#a3e635" },
-    { id: "apps", label: "Apps y suscripciones", emoji: "📱", amount: 22.3, color: "#facc15" },
-    { id: "uni", label: "Universidad (copias, materiales)", emoji: "📚", amount: 48.4, color: "#f97316" },
+    { id: "food", label: "Comida y snacks", emoji: "🍕", amount: 100.5, color: "#34d399" },
+    { id: "transport", label: "Transporte", emoji: "🚌", amount: 50, color: "#22c55e" },
+    { id: "fun", label: "Salidas y ocio", emoji: "🎉", amount: 55, color: "#a3e635" },
+    { id: "apps", label: "Apps y suscripciones", emoji: "📱", amount: 10.3, color: "#facc15" },
+    { id: "uni", label: "Universidad (copias, materiales)", emoji: "📚", amount: 34.2, color: "#f97316" },
   ];
 
   const totalSpent = categories.reduce((sum, c) => sum + c.amount, 0);
@@ -47,7 +47,7 @@ export default function ExpensesScreen({ onBack }) {
         Resumen de gastos
       </h1>
       <p className="text-xs md:text-sm text-slate-300 mb-5">
-        Así se está moviendo tu plata este mes como estudiante 💸
+        Así se está moviendo tu plata este mes 💸
       </p>
 
       {/* Presupuesto vs gasto */}
