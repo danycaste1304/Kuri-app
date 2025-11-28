@@ -1,25 +1,25 @@
 import React from "react";
 
 export default function ExpensesScreen({ onBack }) {
-  // 💸 Datos de ejemplo pensados para estudiante universitario
-  const monthlyBudget = 250; // presupuesto mensual total en Kuri (USD)
+  // 💸 Presupuesto mensual configurado en Kuri
+  const monthlyBudget = 250; // USD
 
-  // Estas categorías suman exactamente 250 USD
+  // Gastos de ejemplo (realistas) para un estudiante, suman 237
   const categories = [
-    { id: "food",      label: "Comida y snacks",           emoji: "🍕", amount: 100.5, color: "#34d399" },
-    { id: "transport", label: "Transporte",                emoji: "🚌", amount: 50,    color: "#22c55e" },
-    { id: "fun",       label: "Salidas y ocio",           emoji: "🎉", amount: 55,    color: "#a3e635" },
-    { id: "apps",      label: "Apps y suscripciones",      emoji: "📱", amount: 10.3, color: "#facc15" },
-    { id: "uni",       label: "Universidad (copias, materiales)", emoji: "📚", amount: 34.2, color: "#f97316" },
+    { id: "food",      label: "Comida y snacks",                 emoji: "🍕", amount: 100, color: "#34d399" },
+    { id: "transport", label: "Transporte",                      emoji: "🚌", amount: 40,  color: "#22c55e" },
+    { id: "fun",       label: "Salidas y ocio",                  emoji: "🎉", amount: 55,  color: "#a3e635" },
+    { id: "apps",      label: "Apps y suscripciones",            emoji: "📱", amount: 12,  color: "#facc15" },
+    { id: "uni",       label: "Universidad (copias, materiales)",emoji: "📚", amount: 30,  color: "#f97316" },
   ];
 
-  const totalSpent = categories.reduce((sum, c) => sum + c.amount, 0);
-  const remaining = monthlyBudget - totalSpent;
-  const percentUsed = Math.round((totalSpent / monthlyBudget) * 100);
+  const totalSpent = categories.reduce((sum, c) => sum + c.amount, 0); // 237
+  const remaining = monthlyBudget - totalSpent; // 13
+  const percentUsed = Math.round((totalSpent / monthlyBudget) * 100); // 95 %
 
-  // 🎯 Modelo simple de ahorro sugerido: 20% del presupuesto
-  const suggestedSaving = Math.round(monthlyBudget * 0.2); // 50 USD si el presupuesto es 250
-  const weeklySaving = Math.round((suggestedSaving / 4) * 10) / 10; // ahorro semanal aprox.
+  // 🎯 Modelo de ahorro sugerido: 20% del presupuesto
+  const suggestedSaving = Math.round(monthlyBudget * 0.2); // 50 USD
+  const weeklySaving = Math.round((suggestedSaving / 4) * 10) / 10; // ≈ 12.5 USD/semana
 
   // Donut chart segments
   const totalForPie = totalSpent || 1; // evitar división por 0
@@ -76,11 +76,15 @@ export default function ExpensesScreen({ onBack }) {
             </p>
             <p
               className={`text-[11px] mt-1 ${
-                remaining >= 0 ? "text-emerald-300" : "text-red-300"
+                remaining > 0
+                  ? "text-emerald-300"
+                  : remaining === 0
+                  ? "text-amber-300"
+                  : "text-red-300"
               }`}
             >
               {remaining > 0
-                ? `Te quedan $${remaining.toFixed(2)}`
+                ? `Te quedan $${remaining.toFixed(2)} de tu presupuesto`
                 : remaining === 0
                 ? "Has usado el 100% de tu presupuesto"
                 : `Te pasaste $${Math.abs(remaining).toFixed(2)}`}
@@ -97,7 +101,11 @@ export default function ExpensesScreen({ onBack }) {
           <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
             <div
               className={`h-full ${
-                percentUsed <= 80 ? "bg-emerald-400" : "bg-red-400"
+                percentUsed <= 80
+                  ? "bg-emerald-400"
+                  : percentUsed <= 100
+                  ? "bg-amber-400"
+                  : "bg-red-400"
               } transition-all`}
               style={{ width: `${Math.min(percentUsed, 110)}%` }}
             />
@@ -198,7 +206,11 @@ export default function ExpensesScreen({ onBack }) {
           Modelo de ahorro sugerido 🐾
         </h2>
         <p className="text-slate-200 mb-2">
-          Kuri te propone ahorrar alrededor de{" "}
+          Con un presupuesto de{" "}
+          <span className="font-semibold text-emerald-300">
+            ${monthlyBudget.toFixed(0)}
+          </span>
+          , Kuri te propone ahorrar alrededor de{" "}
           <span className="font-bold text-emerald-300">
             ${suggestedSaving.toFixed(0)} al mes
           </span>{" "}
@@ -218,17 +230,22 @@ export default function ExpensesScreen({ onBack }) {
         </p>
 
         <p className="text-slate-400 text-[12px] md:text-sm">
-          Ideas concretas:
-          <br />• Bajar{" "}
+          Ideas concretas para liberar esos{" "}
+          <span className="text-emerald-200 font-semibold">
+            ${suggestedSaving.toFixed(0)}
+          </span>
+          :
+          <br />• Bajar alrededor de{" "}
           <span className="text-emerald-200">~$20</span> en{" "}
-          <span className="text-slate-200">Comida y snacks</span> (llevar algo
-          de casa).
+          <span className="text-slate-200">Comida y snacks</span>{" "}
+          (llevar algo de casa algunos días).
           <br />• Reducir{" "}
           <span className="text-emerald-200">~$20</span> en{" "}
-          <span className="text-slate-200">Salidas y ocio</span>.
+          <span className="text-slate-200">Salidas y ocio</span>{" "}
+          (una salida menos o planes más low-cost).
           <br />• Revisar{" "}
-          <span className="text-slate-200">suscripciones</span> y cancelar una
-          app que no uses (ahorrar{" "}
+          <span className="text-slate-200">suscripciones</span> y cancelar
+          una app que casi no uses (ahorrar{" "}
           <span className="text-emerald-200">~$10</span>).
         </p>
       </div>
