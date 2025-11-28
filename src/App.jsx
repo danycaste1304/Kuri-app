@@ -10,7 +10,7 @@ import SplashScreen from "./SplashScreen";
 import Sombrero from "./assets/sombrero.png"; // para tenerlo gratis (no equipado)
 
 function App() {
-  const [screen, setScreen] = useState("splash");
+  const [screen, setScreen] = useState("home");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
@@ -48,7 +48,7 @@ function App() {
       diadema:  { top: "200px", width: "200px", transform: "translateX(-65px)" },
 
       sombrero: {
-        top: "40px",                // NUEVO: subido a la cabeza
+        top: "80px",                // NUEVO: subido a la cabeza
         width: "150px",             // NUEVO: tamaño más natural
         transform: "translateX(-100px)" // NUEVO: centrado sobre la cabeza
       },
