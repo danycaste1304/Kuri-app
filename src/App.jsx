@@ -45,7 +45,7 @@ function App() {
 
   const accessoryStyles = {
     armadillo: {
-      diadema:  { top: "5px", width: "260px", transform: "translateX(-85px)" },
+      diadema:  { top: "5px", width: "260px", transform: "translateX(-100px)" },
 
       sombrero: {
         top: "10px",                // NUEVO: subido a la cabeza
