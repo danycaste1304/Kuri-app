@@ -240,14 +240,16 @@ function App() {
 
   return (
     <div
-      className="min-h-screen w-full bg-cover bg-center relative"
-      style={{
-        backgroundImage: `url(${fondo1})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+  className="min-h-screen w-full bg-cover bg-center relative flex justify-center"
+  style={{
+    backgroundImage: `url(${fondo1})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }}
+>
+  {/* CONTENEDOR TIPO CELULAR (centrado SIEMPRE) */}
+  <div className="w-full max-w-[480px] min-h-screen bg-black/40">
       {/* SPLASH */}
       {screen === "splash" && (
         <SplashScreen onFinish={() => setScreen("onboarding")} />
@@ -467,6 +469,7 @@ function App() {
           />
         </div>
       )}
+    </div>
     </div>
   );
 }
