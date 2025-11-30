@@ -71,8 +71,8 @@ function App() {
 
     conejo: {
       sombrero: {
-        top: "20%",
-        left: "50%",
+        top: "15%",
+        left: "55%",
         width: "50%",
         transform: "translateX(-50%)",
       },
