@@ -62,7 +62,7 @@ function App() {
         transform: "translateX(-50%)",
       },
       guitarra: {
-        top: "62%",
+        top: "55%",
         left: "50%",
         width: "60%",
         transform: "translateX(-50%)",
