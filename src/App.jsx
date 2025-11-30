@@ -131,14 +131,14 @@ function App() {
         transform: "translateX(-50%)",
       },
       diadema: {
-        top: "6%",
+        top: "5%",
         left: "50%",
-        width: "55%",
+        width: "60%",
         transform: "translateX(-50%)",
       },
       lazo: {
-        top: "18%",
-        left: "50%",
+        top: "15%",
+        left: "40%",
         width: "32%",
         transform: "translateX(-50%)",
       },
