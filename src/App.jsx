@@ -7,101 +7,228 @@ import OnboardingScreen from "./OnboardingScreen";
 import defaultPetImage from "./assets/Armadillo.png";
 import fondo1 from "./assets/Fondo1.png";
 import SplashScreen from "./SplashScreen";
-import Sombrero from "./assets/sombrero.png"; // para tenerlo gratis (no equipado)
 
 function App() {
   const [screen, setScreen] = useState("splash");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
-  // 👒 Kuri YA NO sale con sombrero puesto
-  const [accessory, setAccessory] = useState(null);
-
-  // 🪙 Menos monedas iniciales para probar
+  // 🪙 Monedas iniciales
   const [coins, setCoins] = useState(40);
 
-  // 🐾 Mascotas que el usuario ya posee (armadillo y dragón gratis)
+  // 🐾 Mascotas disponibles desde el inicio
   const [ownedPets, setOwnedPets] = useState(["armadillo", "dragon"]);
 
-  // 🎁 Accesorios que el usuario ya posee (sombrero gratis por defecto)
+  // 🎁 Accesorios disponibles (sombrero gratis)
   const [ownedAccessories, setOwnedAccessories] = useState(["sombrero"]);
+
+  const [accessory, setAccessory] = useState(null);
 
   const [userProfile, setUserProfile] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
 
-  // 🔔 Notificación de gasto fuera de presupuesto
+  // 🔔 Notificación de sobrepresupuesto
   const [spendingAlert, setSpendingAlert] = useState(false);
 
-  // ▶️ Mostrar la notificación unos segundos después de entrar al HOME
   useEffect(() => {
     if (screen !== "home") return;
 
     const timer = setTimeout(() => {
       setSpendingAlert(true);
-    }, 15000); // 15 s para probar fácil; luego si quieres lo cambiamos a 60000
+    }, 15000);
 
     return () => clearTimeout(timer);
   }, [screen]);
 
+  // 🎯 ACCESORIOS RESPONSIVOS (100% PORCENTAJES)
   const accessoryStyles = {
     armadillo: {
-      diadema:  { top: "-5px", width: "240px", transform: "translateX(-100px)" },
-
       sombrero: {
-        top: "10px",                // NUEVO: subido a la cabeza
-        width: "150px",             // NUEVO: tamaño más natural
-        transform: "translateX(-100px)" // NUEVO: centrado sobre la cabeza
+        top: "6%",
+        left: "50%",
+        width: "55%",
+        transform: "translateX(-50%)",
       },
-
-      lazo:     { top: "40px",                // NUEVO: subido a la cabeza
-        width: "100px",             // NUEVO: tamaño más natural
-        transform: "translateX(-60px)"},
-      guitarra: { top: "10px",                // NUEVO: subido a la cabeza
-        width: "170px",             // NUEVO: tamaño más natural
-        transform: "translateX(-60px)" },
+      diadema: {
+        top: "8%",
+        left: "50%",
+        width: "60%",
+        transform: "translateX(-50%)",
+      },
+      lazo: {
+        top: "26%",
+        left: "50%",
+        width: "35%",
+        transform: "translateX(-50%)",
+      },
+      guitarra: {
+        top: "62%",
+        left: "50%",
+        width: "60%",
+        transform: "translateX(-50%)",
+      },
     },
 
     conejo: {
-      diadema: { top: "240px", width: "190px", transform: "translateX(-60px)" },
-      sombrero: { top: "10px",                // NUEVO: subido a la cabeza
-        width: "150px",             // NUEVO: tamaño más natural
-        transform: "translateX(-100px)"},
-      lazo: { top: "255px", width: "140px" },
-      guitarra: { top: "400px", width: "190px", transform: "translateX(-35px)" },
+      sombrero: {
+        top: "0%",
+        left: "50%",
+        width: "50%",
+        transform: "translateX(-50%)",
+      },
+      diadema: {
+        top: "3%",
+        left: "50%",
+        width: "60%",
+        transform: "translateX(-50%)",
+      },
+      lazo: {
+        top: "20%",
+        left: "50%",
+        width: "35%",
+        transform: "translateX(-50%)",
+      },
+      guitarra: {
+        top: "62%",
+        left: "50%",
+        width: "60%",
+        transform: "translateX(-50%)",
+      },
     },
+
     buho: {
-      diadema: { top: "180px", width: "160px" },
-      sombrero: { top: "160px", width: "170px" },
-      lazo: { top: "200px", width: "130px" },
-      guitarra: { top: "340px", width: "180px", transform: "translateX(-40px)" },
+      sombrero: {
+        top: "2%",
+        left: "50%",
+        width: "52%",
+        transform: "translateX(-50%)",
+      },
+      diadema: {
+        top: "4%",
+        left: "50%",
+        width: "58%",
+        transform: "translateX(-50%)",
+      },
+      lazo: {
+        top: "22%",
+        left: "50%",
+        width: "33%",
+        transform: "translateX(-50%)",
+      },
+      guitarra: {
+        top: "60%",
+        left: "50%",
+        width: "60%",
+        transform: "translateX(-50%)",
+      },
     },
+
     dragon: {
-      diadema: { top: "210px", width: "200px" },
-      sombrero: { top: "-5px",                // NUEVO: subido a la cabeza
-        width: "150px",             // NUEVO: tamaño más natural
-        transform: "translateX(-100px)" },
-      lazo: {  top: "30px",                // NUEVO: subido a la cabeza
-        width: "100px",             // NUEVO: tamaño más natural
-        transform: "translateX(-80px)" },
-      guitarra: { top: "390px", width: "200px", transform: "translateX(-45px)" },
+      sombrero: {
+        top: "4%",
+        left: "50%",
+        width: "48%",
+        transform: "translateX(-50%)",
+      },
+      diadema: {
+        top: "6%",
+        left: "50%",
+        width: "55%",
+        transform: "translateX(-50%)",
+      },
+      lazo: {
+        top: "18%",
+        left: "50%",
+        width: "32%",
+        transform: "translateX(-50%)",
+      },
+      guitarra: {
+        top: "58%",
+        left: "50%",
+        width: "62%",
+        transform: "translateX(-50%)",
+      },
     },
+
     cerdito: {
-      diadema: { top: "220px", width: "160px" },
-      sombrero: { top: "200px", width: "170px" },
-      lazo: { top: "250px", width: "130px" },
-      guitarra: { top: "360px", width: "170px", transform: "translateX(-40px)" },
+      sombrero: {
+        top: "4%",
+        left: "50%",
+        width: "50%",
+        transform: "translateX(-50%)",
+      },
+      diadema: {
+        top: "6%",
+        left: "50%",
+        width: "55%",
+        transform: "translateX(-50%)",
+      },
+      lazo: {
+        top: "24%",
+        left: "50%",
+        width: "34%",
+        transform: "translateX(-50%)",
+      },
+      guitarra: {
+        top: "63%",
+        left: "50%",
+        width: "60%",
+        transform: "translateX(-50%)",
+      },
     },
+
     zorro: {
-      diadema: { top: "210px", width: "170px" },
-      sombrero: { top: "190px", width: "180px" },
-      lazo: { top: "235px", width: "140px" },
-      guitarra: { top: "370px", width: "180px", transform: "translateX(-45px)" },
+      sombrero: {
+        top: "3%",
+        left: "50%",
+        width: "52%",
+        transform: "translateX(-50%)",
+      },
+      diadema: {
+        top: "6%",
+        left: "50%",
+        width: "58%",
+        transform: "translateX(-50%)",
+      },
+      lazo: {
+        top: "23%",
+        left: "50%",
+        width: "34%",
+        transform: "translateX(-50%)",
+      },
+      guitarra: {
+        top: "61%",
+        left: "50%",
+        width: "60%",
+        transform: "translateX(-50%)",
+      },
     },
+
     default: {
-      diadema: { top: "220px", width: "170px" },
-      sombrero: { top: "210px", width: "180px" },
-      lazo: { top: "255px", width: "140px" },
-      guitarra: { top: "285px", width: "180px" },
+      sombrero: {
+        top: "5%",
+        left: "50%",
+        width: "50%",
+        transform: "translateX(-50%)",
+      },
+      diadema: {
+        top: "7%",
+        left: "50%",
+        width: "58%",
+        transform: "translateX(-50%)",
+      },
+      lazo: {
+        top: "25%",
+        left: "50%",
+        width: "34%",
+        transform: "translateX(-50%)",
+      },
+      guitarra: {
+        top: "60%",
+        left: "50%",
+        width: "58%",
+        transform: "translateX(-50%)",
+      },
     },
   };
 
@@ -121,12 +248,12 @@ function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* SPLASH / PANTALLA INICIAL */}
+      {/* SPLASH */}
       {screen === "splash" && (
         <SplashScreen onFinish={() => setScreen("onboarding")} />
       )}
 
-      {/* ONBOARDING / REGISTRO */}
+      {/* ONBOARDING */}
       {screen === "onboarding" && (
         <div className="min-h-screen w-full bg-black/70 flex items-center justify-center px-4">
           <OnboardingScreen
@@ -152,13 +279,13 @@ function App() {
                 <span className="text-[11px] md:text-xs text-slate-300">
                   Cuenta vinculada
                 </span>
-                <span className="text-xs md:text-sm font-semibold text-slate-50 max-w-[200px] md:max-w-none truncate">
+                <span className="text-xs md:text-sm font-semibold text-slate-50 truncate max-w-[180px]">
                   {bankLabel}
                 </span>
               </div>
             </div>
 
-            {/* Contador de monedas */}
+            {/* MONEDAS */}
             <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
               <span className="text-lg">🪙</span>
               <span className="text-sm md:text-base font-semibold text-amber-300">
@@ -167,7 +294,7 @@ function App() {
             </div>
           </header>
 
-          {/* NOTIFICACIÓN DE GASTO FUERA DE PRESUPUESTO */}
+          {/* NOTIFICACIÓN */}
           {spendingAlert && (
             <div className="px-4 md:px-8 mt-1">
               <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
@@ -192,28 +319,34 @@ function App() {
           {/* MAIN */}
           <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
             <div className="relative flex flex-col items-center w-full max-w-md flex-1">
-              {/* 💬 BURBUJA DE TEXTO DE KURI – NUEVO DISEÑO */}
-                <div className="mt-10 md:mt-12 mb-2 w-full flex justify-center px-3 animate-fadeIn">
-                  <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
-                    
-                    {/* colita más curva y más bonita */}
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
 
-                    <h1 className="text-base md:text-lg font-bold text-emerald-100">
-                      ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾
-                    </h1>
-
-                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
-                      Estoy revisando tus gastos… y prometo ayudarte para que puedas ahorrar sin dejar de disfrutar 💚.
-                    </p>
-                  </div>
+              {/* BURBUJA DE TEXTO */}
+              <div className="mt-10 md:mt-12 mb-2 w-full flex justify-center px-3 animate-fadeIn">
+                <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
+                  <h1 className="text-base md:text-lg font-bold text-emerald-100">
+                    ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾
+                  </h1>
+                  <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
+                    Estoy revisando tus gastos… y prometo ayudarte para que puedas ahorrar sin dejar de disfrutar 💚.
+                  </p>
                 </div>
+              </div>
 
-              {/* ZONA ESCENARIO: MASCOTA SOBRE LA BASE */}
+              {/* ESCENARIO / MASCOTA */}
               <div className="relative w-full flex-1">
-                {/* Wrapper anclado al fondo, centrado y usando rems */}
-                <div className="absolute inset-x-0 bottom-[5.8rem] md:bottom-[6.8rem] flex justify-center">
-                  <div className="relative w-[16rem] h-[19rem] md:w-[20rem] md:h-[22rem] flex items-end justify-center">
+                <div className="absolute inset-x-0 bottom-[6rem] md:bottom-[7rem] lg:bottom-[8rem] flex justify-center">
+                  <div
+                    className="
+                      relative
+                      w-[16rem] h-[19rem]
+                      md:w-[20rem] md:h-[22rem]
+                      lg:w-[24rem] lg:h-[26rem]
+                      xl:w-[26rem] xl:h-[28rem]
+                      2xl:w-[28rem] 2xl:h-[32rem]
+                      flex items-end justify-center
+                    "
+                  >
                     <img
                       src={petImageState}
                       alt="Mascota financiera"
@@ -224,15 +357,11 @@ function App() {
                       <img
                         src={accessory.img}
                         alt={accessory.label}
-                        className="absolute left-1/2 -translate-x-1/2 object-contain"
+                        className="absolute object-contain"
                         style={
                           (accessoryStyles[currentPetId] &&
                             accessoryStyles[currentPetId][accessory.id]) ||
-                          (accessoryStyles.default &&
-                            accessoryStyles.default[accessory.id]) || {
-                            top: "230px",
-                            width: "160px",
-                          }
+                          accessoryStyles.default[accessory.id]
                         }
                       />
                     )}
@@ -242,7 +371,7 @@ function App() {
             </div>
           </main>
 
-          {/* BOTONES INFERIORES */}
+          {/* NAV */}
           <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
             <div className="bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex gap-5 md:gap-8 shadow-lg backdrop-blur-md">
               {[
@@ -284,15 +413,9 @@ function App() {
             }}
             onBuyPet={(petObj) => {
               if (ownedPets.includes(petObj.id)) return;
-              if (coins < petObj.price) {
-                alert("No tienes suficientes monedas para esta mascota.");
-                return;
-              }
+              if (coins < petObj.price) return alert("No tienes suficientes monedas.");
               setCoins((c) => c - petObj.price);
               setOwnedPets((prev) => [...prev, petObj.id]);
-              setPetImageState(petObj.img);
-              setCurrentPetId(petObj.id);
-              setScreen("home");
             }}
             onSelectAccessory={(acc) => {
               setAccessory(acc);
@@ -300,10 +423,7 @@ function App() {
             }}
             onBuyAccessory={(acc) => {
               if (ownedAccessories.includes(acc.id)) return;
-              if (coins < acc.price) {
-                alert("No tienes suficientes monedas para este accesorio.");
-                return;
-              }
+              if (coins < acc.price) return alert("No tienes suficientes monedas.");
               setCoins((c) => c - acc.price);
               setOwnedAccessories((prev) => [...prev, acc.id]);
               setAccessory(acc);
@@ -327,7 +447,7 @@ function App() {
         </div>
       )}
 
-      {/* OBJETIVO DE AHORRO */}
+      {/* AHORRO */}
       {screen === "savings" && (
         <div className="min-h-screen w-full bg-black/70">
           <SavingsGoalScreen
