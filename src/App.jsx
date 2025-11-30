@@ -126,7 +126,7 @@ function App() {
     dragon: {
       sombrero: {
         top: "4%",
-        left: "45%",
+        left: "40%",
         width: "48%",
         transform: "translateX(-50%)",
       },
@@ -143,7 +143,7 @@ function App() {
         transform: "translateX(-50%)",
       },
       guitarra: {
-        top: "55%",
+        top: "50%",
         left: "40%",
         width: "62%",
         transform: "translateX(-50%)",
