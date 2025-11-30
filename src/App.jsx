@@ -52,11 +52,11 @@ function App() {
       diadema: {
         top: "8%",
         left: "50%",
-        width: "60%",
+        width: "70%",
         transform: "translateX(-50%)",
       },
       lazo: {
-        top: "20%",
+        top: "18%",
         left: "50%",
         width: "35%",
         transform: "translateX(-50%)",
