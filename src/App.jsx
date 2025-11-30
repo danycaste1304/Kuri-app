@@ -9,7 +9,7 @@ import fondo1 from "./assets/Fondo1.png";
 import SplashScreen from "./SplashScreen";
 
 function App() {
-  const [screen, setScreen] = useState("splash");
+  const [screen, setScreen] = useState("home");
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
