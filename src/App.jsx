@@ -132,12 +132,12 @@ function App() {
       },
       diadema: {
         top: "5%",
-        left: "50%",
-        width: "60%",
+        left: "45%",
+        width: "65%",
         transform: "translateX(-50%)",
       },
       lazo: {
-        top: "15%",
+        top: "12%",
         left: "40%",
         width: "32%",
         transform: "translateX(-50%)",
