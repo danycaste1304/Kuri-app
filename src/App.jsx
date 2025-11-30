@@ -341,7 +341,13 @@ function App() {
               {/* ESCENARIO / MASCOTA */}
               <div className="relative w-full flex-1">
                 {/* anclado siempre un poco arriba de la barra inferior */}
-                <div className="absolute inset-x-0 bottom-[5.8rem] md:bottom-[-2rem] lg:bottom-[-3rem] flex justify-center">
+                <div className="
+                  absolute inset-x-0 
+                  bottom-[4rem]        /* ↓ bajada en CELULARES */
+                  md:bottom-[-2rem]    /* posición en tablet/pc medianos */
+                  lg:bottom-[-3rem]    /* posición en pc grandes */
+                  flex justify-center
+                ">
 
                   <div
                     className="
