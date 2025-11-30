@@ -50,8 +50,8 @@ function App() {
         transform: "translateX(-50%)",
       },
       diadema: {
-        top: "3%",
-        left: "55%",
+        top: "2%",
+        left: "58%",
         width: "80%",
         transform: "translateX(-50%)",
       },
