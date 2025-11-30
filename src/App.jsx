@@ -56,7 +56,7 @@ function App() {
         transform: "translateX(-50%)",
       },
       lazo: {
-        top: "26%",
+        top: "20%",
         left: "50%",
         width: "35%",
         transform: "translateX(-50%)",
