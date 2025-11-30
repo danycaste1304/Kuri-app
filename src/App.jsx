@@ -268,53 +268,58 @@ function App() {
 
       {/* HOME */}
       {screen === "home" && (
-        <div className="min-h-screen w-full bg-black/40 flex flex-col">
-          {/* HEADER */}
-          <header className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-emerald-400/90 flex items-center justify-center border-2 border-emerald-300 text-slate-950 font-bold text-sm md:text-base">
-                <span>{initials}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[11px] md:text-xs text-slate-300">
-                  Cuenta vinculada
-                </span>
-                <span className="text-xs md:text-sm font-semibold text-slate-50 truncate max-w-[180px]">
-                  {bankLabel}
-                </span>
-              </div>
-            </div>
+        <div className="min-h-screen w-full bg-black/40 flex justify-center">
+          {/* Columna tipo celular */}
+          <div className="w-full max-w-[480px] flex flex-col">
 
-            {/* MONEDAS */}
-            <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
-              <span className="text-lg">🪙</span>
-              <span className="text-sm md:text-base font-semibold text-amber-300">
-                {coins}
-              </span>
-            </div>
-          </header>
-
-          {/* NOTIFICACIÓN */}
-          {spendingAlert && (
-            <div className="px-4 md:px-8 mt-1">
-              <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
-                <div className="text-xl pt-0.5">🐾</div>
-                <div className="flex-1">
-                  <p className="text-xs md:text-sm text-amber-100">
-                    Oye, vi un gasto que se sale un poquito de tu presupuesto.
-                    A veces te mereces un gustito 💚, pero no te olvides de tu
-                    ahorro… ni de mí.
-                  </p>
+            {/* HEADER */}
+            <header className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-emerald-400/90 flex items-center justify-center border-2 border-emerald-300 text-slate-950 font-bold text-sm md:text-base">
+                  <span>{initials}</span>
                 </div>
-                <button
-                  onClick={() => setSpendingAlert(false)}
-                  className="ml-2 text-[11px] text-amber-200/80 hover:text-amber-100"
-                >
-                  ✕
-                </button>
+
+                <div className="flex flex-col">
+                  <span className="text-[11px] md:text-xs text-slate-300">
+                    Cuenta vinculada
+                  </span>
+
+                  <span className="text-xs md:text-sm font-semibold text-slate-50 truncate max-w-[180px]">
+                    {bankLabel}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
+
+              {/* MONEDAS */}
+              <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
+                <span className="text-lg">🪙</span>
+                <span className="text-sm md:text-base font-semibold text-amber-300">
+                  {coins}
+                </span>
+              </div>
+            </header>
+
+            {/* NOTIFICACIÓN */}
+            {spendingAlert && (
+              <div className="px-4 md:px-8 mt-1">
+                <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
+                  <div className="text-xl pt-0.5">🐾</div>
+                  <div className="flex-1">
+                    <p className="text-xs md:text-sm text-amber-100">
+                      Oye, vi un gasto que se sale un poquito de tu presupuesto.
+                      A veces te mereces un gustito 💚, pero no te olvides de tu
+                      ahorro… ni de mí.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSpendingAlert(false)}
+                    className="ml-2 text-[11px] text-amber-200/80 hover:text-amber-100"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
 
           {/* MAIN */}
           <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
@@ -335,15 +340,13 @@ function App() {
 
               {/* ESCENARIO / MASCOTA */}
               <div className="relative w-full flex-1">
-                <div className="absolute inset-x-0 bottom-[6rem] md:bottom-[7rem] lg:bottom-[8rem] flex justify-center">
+                {/* anclado siempre un poco arriba de la barra inferior */}
+                <div className="absolute inset-x-0 bottom-[5.5rem] md:bottom-[6rem] flex justify-center">
                   <div
                     className="
                       relative
                       w-[16rem] h-[19rem]
-                      md:w-[20rem] md:h-[22rem]
-                      lg:w-[24rem] lg:h-[26rem]
-                      xl:w-[26rem] xl:h-[28rem]
-                      2xl:w-[28rem] 2xl:h-[32rem]
+                      md:w-[18rem] md:h-[21rem]
                       flex items-end justify-center
                     "
                   >
@@ -393,6 +396,7 @@ function App() {
               ))}
             </div>
           </nav>
+        </div>{/* fin columna tipo celular */}
         </div>
       )}
 
