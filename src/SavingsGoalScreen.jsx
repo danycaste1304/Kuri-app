@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
+  
   // Objetivo sugerido (podrías cambiar el valor inicial si quieres)
   const [goalInput, setGoalInput] = useState("300"); // USD
   const numericGoal = parseFloat(goalInput) || 0;
@@ -43,7 +44,9 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
   };
 
   return (
-    <div className="min-h-screen px-6 py-6 text-white flex flex-col">
+    <div className="min-h-screen w-full bg-black/80 text-white flex justify-center">
+      <div className="w-full max-w-[960px] px-4 py-5 md:px-8 md:py-6">
+
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button
@@ -336,6 +339,7 @@ export default function SavingsGoalScreen({ onBack, onEarnCoins }) {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 }

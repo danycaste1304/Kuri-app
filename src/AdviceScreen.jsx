@@ -36,7 +36,8 @@ export default function AdviceScreen({ onBack }) {
   ];
 
   return (
-    <div className="min-h-screen px-6 py-6 text-white">
+    <div className="min-h-screen w-full bg-black/80 text-white flex justify-center">
+      <div className="w-full max-w-[960px] px-6 py-6">
       {/* Volver */}
       <button
         onClick={onBack}
@@ -102,6 +103,7 @@ export default function AdviceScreen({ onBack }) {
           </a>
         ))}
       </div>
+    </div>
     </div>
   );
 }

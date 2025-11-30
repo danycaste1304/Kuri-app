@@ -341,7 +341,7 @@ function App() {
               {/* ESCENARIO / MASCOTA */}
               <div className="relative w-full flex-1">
                 {/* anclado siempre un poco arriba de la barra inferior */}
-                <div className="absolute inset-x-0 bottom-[5.5rem] md:bottom-[6rem] flex justify-center">
+                <div className="absolute inset-x-0 bottom-[3.5rem] md:bottom-[4rem] lg:bottom-[4.5rem] flex justify-center">
                   <div
                     className="
                       relative

@@ -46,7 +46,8 @@ export default function CustomizeScreen({
   const [mode, setMode] = useState("accessories");
 
   return (
-    <div className="min-h-screen px-6 py-6 text-white">
+    <div className="min-h-screen w-full bg-black/80 text-white flex justify-center">
+      <div className="w-full max-w-[480px] px-6 py-6">
       {/* Botón volver */}
       <button
         className="mb-4 text-sm bg-slate-800 px-4 py-2 rounded-xl hover:bg-slate-700"
@@ -219,6 +220,7 @@ export default function CustomizeScreen({
           </div>
         </>
       )}
+    </div>
     </div>
   );
 }
