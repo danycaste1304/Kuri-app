@@ -63,7 +63,7 @@ function App() {
       },
       guitarra: {
         top: "55%",
-        left: "50%",
+        left: "60%",
         width: "60%",
         transform: "translateX(-50%)",
       },
