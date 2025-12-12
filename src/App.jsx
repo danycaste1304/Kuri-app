@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import CustomizeScreen from "./CustomizeScreen";
 import ExpensesScreen from "./ExpensesScreen";
 import AdviceScreen from "./AdviceScreen";
@@ -11,13 +11,9 @@ import SplashScreen from "./SplashScreen";
 /* ===========================================
    1) DATOS FICTICIOS COHERENTES (MVP)
    =========================================== */
-
 const MOCK_USER = { name: "Daniela" };
 
-const MOCK_BANK = {
-  bankName: "Banco Pichincha",
-  last4: "1234",
-};
+const MOCK_BANK = { bankName: "Banco Pichincha", last4: "1234" };
 
 const MOCK_MONTHLY_BUDGET = 400;
 const MOCK_LAST_MONTH_SPENT = 420;
@@ -42,7 +38,6 @@ const MOCK_SAVINGS_GOAL = 80;
 /* ===========================================
    2) MOODS DE KURI
    =========================================== */
-
 const MOOD_THRESHOLDS = {
   HAPPY_MAX: 50,
   NEUTRAL_MAX: 90,
@@ -59,7 +54,6 @@ const MOOD_CONFIG = {
 /* ===========================================
    3) LÓGICA FINANCIERA
    =========================================== */
-
 function getMonthlySummary(transactions, monthlyBudget) {
   const spentThisMonth = transactions.reduce((sum, t) => sum + t.amount, 0);
 
@@ -127,7 +121,6 @@ function generateMonthlyChallenge(lastMonthSpent, currentSpent) {
 /* ===========================================
    4) APP
    =========================================== */
-
 export default function App() {
   const [screen, setScreen] = useState("splash");
 
@@ -142,33 +135,48 @@ export default function App() {
   const [userProfile, setUserProfile] = useState(MOCK_USER);
   const [bankInfo, setBankInfo] = useState(MOCK_BANK);
 
-  const [spendingAlert, setSpendingAlert] = useState(false);
-
   const [monthlyBudget] = useState(MOCK_MONTHLY_BUDGET);
   const [transactions] = useState(MOCK_TRANSACTIONS);
   const [lastMonthSpent] = useState(MOCK_LAST_MONTH_SPENT);
   const [savingsGoal] = useState(MOCK_SAVINGS_GOAL);
 
-  const summary = getMonthlySummary(transactions, monthlyBudget);
-  const kuriMood = getKuriMood(summary);
-  const moodData = MOOD_CONFIG[kuriMood] || MOOD_CONFIG.neutral;
+  const summary = useMemo(
+    () => getMonthlySummary(transactions, monthlyBudget),
+    [transactions, monthlyBudget]
+  );
+  const kuriMood = useMemo(() => getKuriMood(summary), [summary]);
+  const { level: kuriLevel, xp: kuriXP } = useMemo(
+    () => calculateKuriLevel(transactions),
+    [transactions]
+  );
+  const monthlyChallenge = useMemo(
+    () => generateMonthlyChallenge(lastMonthSpent, summary.spentThisMonth),
+    [lastMonthSpent, summary.spentThisMonth]
+  );
 
-  const { level: kuriLevel, xp: kuriXP } = calculateKuriLevel(transactions);
+  const [spendingAlert, setSpendingAlert] = useState(false);
 
-  const monthlyChallenge = generateMonthlyChallenge(lastMonthSpent, summary.spentThisMonth);
-
-  // Notificación si estamos cerca del presupuesto (simulada)
   useEffect(() => {
     if (screen !== "home") return;
 
     const timer = setTimeout(() => {
       if (summary.percentage >= 90) setSpendingAlert(true);
-    }, 15000);
+    }, 8000); // un poquito más rápido para demo
 
     return () => clearTimeout(timer);
   }, [screen, summary.percentage]);
 
-  // ACCESORIOS (tus estilos)
+  // ✅ Donde configuras moods:
+  const moodData = MOOD_CONFIG[kuriMood] || MOOD_CONFIG.neutral;
+
+  // ✅ Header data
+  const displayName = userProfile?.name || "Usuario";
+  const initials = displayName.charAt(0).toUpperCase();
+  const bankLabel = bankInfo
+    ? `${bankInfo.bankName} · •••• ${bankInfo.last4}`
+    : "Banco vinculado · •••• 1234";
+
+  // 🎯 Accesorios por mascota
   const accessoryStyles = {
     armadillo: {
       sombrero: { top: "6%", left: "50%", width: "55%", transform: "translateX(-50%)" },
@@ -182,29 +190,11 @@ export default function App() {
       lazo: { top: "20%", left: "50%", width: "35%", transform: "translateX(-50%)" },
       guitarra: { top: "62%", left: "50%", width: "60%", transform: "translateX(-50%)" },
     },
-    buho: {
-      sombrero: { top: "2%", left: "50%", width: "52%", transform: "translateX(-50%)" },
-      diadema: { top: "4%", left: "50%", width: "58%", transform: "translateX(-50%)" },
-      lazo: { top: "22%", left: "50%", width: "33%", transform: "translateX(-50%)" },
-      guitarra: { top: "60%", left: "50%", width: "60%", transform: "translateX(-50%)" },
-    },
     dragon: {
       sombrero: { top: "4%", left: "40%", width: "48%", transform: "translateX(-50%)" },
       diadema: { top: "2%", left: "47%", width: "65%", transform: "translateX(-50%)" },
       lazo: { top: "12%", left: "40%", width: "32%", transform: "translateX(-50%)" },
       guitarra: { top: "50%", left: "40%", width: "62%", transform: "translateX(-50%)" },
-    },
-    cerdito: {
-      sombrero: { top: "10%", left: "50%", width: "50%", transform: "translateX(-50%)" },
-      diadema: { top: "6%", left: "50%", width: "55%", transform: "translateX(-50%)" },
-      lazo: { top: "24%", left: "50%", width: "34%", transform: "translateX(-50%)" },
-      guitarra: { top: "63%", left: "50%", width: "60%", transform: "translateX(-50%)" },
-    },
-    zorro: {
-      sombrero: { top: "3%", left: "50%", width: "52%", transform: "translateX(-50%)" },
-      diadema: { top: "6%", left: "50%", width: "58%", transform: "translateX(-50%)" },
-      lazo: { top: "23%", left: "50%", width: "34%", transform: "translateX(-50%)" },
-      guitarra: { top: "61%", left: "50%", width: "60%", transform: "translateX(-50%)" },
     },
     default: {
       sombrero: { top: "5%", left: "50%", width: "50%", transform: "translateX(-50%)" },
@@ -214,13 +204,10 @@ export default function App() {
     },
   };
 
-  const displayName = userProfile?.name || "Usuario";
-  const initials = displayName.charAt(0).toUpperCase();
-  const bankLabel = bankInfo ? `${bankInfo.bankName} · •••• ${bankInfo.last4}` : "Banco vinculado · •••• 1234";
-
   return (
+    // ✅ APP SHELL: ocupa la pantalla del móvil y NO deja scrollear el sitio
     <div
-      className="min-h-[100dvh] w-full bg-cover bg-center"
+      className="w-full h-[100dvh] bg-cover bg-center relative"
       style={{
         backgroundImage: `url(${fondo1})`,
         backgroundSize: "cover",
@@ -228,14 +215,18 @@ export default function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* CAPA OSCURA */}
-      <div className="w-full min-h-[100dvh] bg-black/45 flex flex-col">
+      {/* overlay + layout fijo */}
+      <div className="w-full h-[100dvh] bg-black/45 flex flex-col overflow-hidden">
         {/* SPLASH */}
-        {screen === "splash" && <SplashScreen onFinish={() => setScreen("onboarding")} />}
+        {screen === "splash" && (
+          <div className="flex-1">
+            <SplashScreen onFinish={() => setScreen("onboarding")} />
+          </div>
+        )}
 
         {/* ONBOARDING */}
         {screen === "onboarding" && (
-          <div className="min-h-[100dvh] w-full bg-black/70 flex items-center justify-center px-4">
+          <div className="flex-1 w-full bg-black/70 flex items-center justify-center px-4 overflow-hidden">
             <OnboardingScreen
               onComplete={(user, bank) => {
                 setUserProfile(user || MOCK_USER);
@@ -246,18 +237,19 @@ export default function App() {
           </div>
         )}
 
-        {/* HOME (sin scroll; navbar fija abajo) */}
+        {/* HOME (NO SCROLL) */}
         {screen === "home" && (
-          <div className="relative flex-1 w-full flex flex-col bg-black/40 min-h-0">
+          <div className="flex-1 w-full flex flex-col overflow-hidden">
             {/* HEADER */}
             <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 gap-3">
               <div className="flex items-center gap-2 max-w-[65%]">
                 <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-emerald-400/90 flex items-center justify-center border border-emerald-300 text-slate-950 font-bold text-xs md:text-sm">
                   <span>{initials}</span>
                 </div>
-
                 <div className="flex flex-col overflow-hidden">
-                  <span className="text-[10px] md:text-[11px] text-slate-300">Cuenta vinculada</span>
+                  <span className="text-[10px] md:text-[11px] text-slate-300">
+                    Cuenta vinculada
+                  </span>
                   <span className="text-[11px] md:text-xs font-semibold text-slate-50 truncate">
                     {bankLabel}
                   </span>
@@ -267,10 +259,14 @@ export default function App() {
               <div className="flex flex-col items-end gap-1">
                 <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
                   <span className="text-lg">🪙</span>
-                  <span className="text-sm md:text-base font-semibold text-amber-300">{coins}</span>
+                  <span className="text-sm md:text-base font-semibold text-amber-300">
+                    {coins}
+                  </span>
                 </div>
                 <div className="text-right leading-tight">
-                  <span className="block text-[10px] text-emerald-200">Nivel de Kuri</span>
+                  <span className="block text-[10px] text-emerald-200">
+                    Nivel de Kuri
+                  </span>
                   <span className="text-[11px] md:text-xs font-semibold text-emerald-300">
                     Lv. {kuriLevel} · {kuriXP} XP
                   </span>
@@ -282,15 +278,16 @@ export default function App() {
             <div className="px-4 md:px-6 mt-1">
               <div className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl px-3 py-3 shadow-md">
                 <div className="flex items-center justify-between mb-1">
-                  <h2 className="text-xs md:text-sm font-semibold text-emerald-100">Tu mes con Kuri 💛</h2>
+                  <h2 className="text-xs md:text-sm font-semibold text-emerald-100">
+                    Tu mes con Kuri 💛
+                  </h2>
                   <span className="text-[11px] text-emerald-200">
                     Presupuesto: ${monthlyBudget.toFixed(2)}
                   </span>
                 </div>
-
                 <p className="text-[11px] md:text-xs text-slate-200">
-                  Gastado: <span className="font-semibold">${summary.spentThisMonth.toFixed(2)}</span> · Te queda:{" "}
-                  <span className="font-semibold">${summary.remaining.toFixed(2)}</span>
+                  Gastado: <span className="font-semibold">${summary.spentThisMonth.toFixed(2)}</span>{" "}
+                  · Te queda: <span className="font-semibold">${summary.remaining.toFixed(2)}</span>
                 </p>
 
                 <div className="mt-2 h-2 w-full bg-slate-800 rounded-full overflow-hidden">
@@ -299,24 +296,28 @@ export default function App() {
                     style={{
                       width: `${summary.percentage}%`,
                       backgroundColor:
-                        summary.percentage <= 80 ? "#4ade80" : summary.percentage <= 100 ? "#facc15" : "#f97373",
+                        summary.percentage <= 80
+                          ? "#4ade80"
+                          : summary.percentage <= 100
+                          ? "#facc15"
+                          : "#f97373",
                     }}
                   />
                 </div>
-
-                <p className="mt-1 text-[10px] text-slate-300">Has usado el {summary.percentage}% de tu presupuesto.</p>
+                <p className="mt-1 text-[10px] text-slate-300">
+                  Has usado el {summary.percentage}% de tu presupuesto.
+                </p>
               </div>
             </div>
 
-            {/* NOTIFICACIÓN */}
+            {/* ALERTA */}
             {spendingAlert && (
               <div className="px-4 md:px-6 mt-2">
                 <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
                   <div className="text-xl pt-0.5">🐾</div>
                   <div className="flex-1">
                     <p className="text-xs md:text-sm text-amber-100">
-                      Oye, ya usamos casi todo tu presupuesto de este mes. A veces te mereces un gustito 💚, pero
-                      cuidemos tu ahorro… y también a mí.
+                      Oye, ya usamos casi todo tu presupuesto de este mes. Cuidemos tu ahorro 💚
                     </p>
                   </div>
                   <button
@@ -329,62 +330,61 @@ export default function App() {
               </div>
             )}
 
-            {/* MAIN (con padding abajo para que no tape el nav fijo) */}
-            <main className="flex-1 flex flex-col items-center px-3 pt-1 pb-28 md:px-4 md:pb-32 min-h-0">
-              <div className="flex flex-col items-center w-full max-w-md flex-1 justify-between">
-                {/* BURBUJA */}
-                <div className="mt-6 md:mt-8 mb-2 w-full flex justify-center px-3 animate-fadeIn">
-                  <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
-                    <h1 className="text-base md:text-lg font-bold text-emerald-100">
-                      ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
-                    </h1>
-                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">{moodData.text}</p>
-                  </div>
+            {/* ESCENA CENTRAL (NO SCROLL) */}
+            <main
+              className="
+                flex-1 flex flex-col items-center justify-between
+                px-3 pt-2
+                pb-[7.5rem]   /* ✅ reserva espacio real para que la mascota nunca tape la burbuja ni la navbar */
+              "
+            >
+              {/* BURBUJA */}
+              <div className="w-full flex justify-center px-3 mt-2 animate-fadeIn">
+                <div className="relative w-full max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
+                  <h1 className="text-base md:text-lg font-bold text-emerald-100">
+                    ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
+                  </h1>
+                  <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
+                    {moodData.text}
+                  </p>
                 </div>
+              </div>
 
-                {/* MASCOTA */}
-                <div className="mt-2 mb-4 w-full flex justify-center">
-                  <div
-                    className="
-                      relative
-                      w-[16.5rem] h-[19.5rem]
-                      md:w-[17.5rem] md:h-[20.5rem]
-                      flex items-end justify-center
-                    "
-                  >
+              {/* MASCOTA (tamaño controlado, un poquito abajo, pero sin romper layout) */}
+              <div className="w-full flex justify-center mt-2">
+                <div
+                  className="
+                    relative
+                    w-[16rem] h-[19rem]
+                    md:w-[17.5rem] md:h-[20.5rem]
+                    flex items-end justify-center
+                  "
+                >
+                  <img
+                    src={petImageState}
+                    alt="Mascota financiera"
+                    className="w-full h-full object-contain object-bottom drop-shadow-[0_0_20px_rgba(0,255,200,0.40)]"
+                  />
+
+                  {accessory && (
                     <img
-                      src={petImageState}
-                      alt="Mascota financiera"
-                      className="w-full h-full object-contain object-bottom drop-shadow-[0_0_20px_rgba(0,255,200,0.40)]"
+                      src={accessory.img}
+                      alt={accessory.label}
+                      className="absolute object-contain"
+                      style={
+                        (accessoryStyles[currentPetId] &&
+                          accessoryStyles[currentPetId][accessory.id]) ||
+                        accessoryStyles.default[accessory.id]
+                      }
                     />
-
-                    {accessory && (
-                      <img
-                        src={accessory.img}
-                        alt={accessory.label}
-                        className="absolute object-contain"
-                        style={
-                          (accessoryStyles[currentPetId] && accessoryStyles[currentPetId][accessory.id]) ||
-                          accessoryStyles.default[accessory.id]
-                        }
-                      />
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             </main>
 
-            {/* NAV FIJA (NO SE PIERDE) */}
-            <nav
-              className="
-                fixed left-0 right-0 bottom-0 z-50
-                px-4 md:px-6
-                pb-[calc(env(safe-area-inset-bottom)+16px)]
-                pt-4
-                flex justify-center
-              "
-            >
+            {/* NAVBAR FIJA */}
+            <nav className="shrink-0 w-full px-4 pb-5 pt-3 flex justify-center">
               <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
                 {[
                   { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
@@ -408,9 +408,9 @@ export default function App() {
           </div>
         )}
 
-        {/* CUSTOMIZE (SCROLL EN ESTA PANTALLA) */}
+        {/* ✅ PANTALLAS CON SCROLL INTERNO (NO SCROLL DEL SITIO) */}
         {screen === "customize" && (
-          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
+          <div className="flex-1 w-full overflow-y-auto overscroll-contain bg-black/70">
             <CustomizeScreen
               currentAccessory={accessory}
               selectedPetId={currentPetId}
@@ -445,9 +445,8 @@ export default function App() {
           </div>
         )}
 
-        {/* EXPENSES (SCROLL ARREGLADO) */}
         {screen === "expenses" && (
-          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
+          <div className="flex-1 w-full overflow-y-auto overscroll-contain bg-black/70">
             <ExpensesScreen
               onBack={() => setScreen("home")}
               transactions={transactions}
@@ -458,21 +457,14 @@ export default function App() {
           </div>
         )}
 
-        {/* ADVICE (SCROLL ARREGLADO) */}
         {screen === "advice" && (
-          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
-            <AdviceScreen
-              onBack={() => setScreen("home")}
-              summary={summary}
-              kuriMood={kuriMood}
-              monthlyChallenge={monthlyChallenge}
-            />
+          <div className="flex-1 w-full overflow-y-auto overscroll-contain bg-black/70">
+            <AdviceScreen onBack={() => setScreen("home")} />
           </div>
         )}
 
-        {/* SAVINGS (SCROLL ARREGLADO) */}
         {screen === "savings" && (
-          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
+          <div className="flex-1 w-full overflow-y-auto overscroll-contain bg-black/70">
             <SavingsGoalScreen
               onBack={() => setScreen("home")}
               onEarnCoins={(amount) => setCoins((c) => c + amount)}
