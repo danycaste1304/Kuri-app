@@ -24,6 +24,7 @@ export default function OnboardingScreen({ onComplete }) {
       <p className="text-xs md:text-sm text-slate-200 mb-5">
         Vinculamos tu banco para que Kuri pueda entender tus
         gastos, proponerte un objetivo de ahorro y celebrar tus avances semana a semana.
+        Para este demo solo es necesario ingresar tu nombre y dar click en el botón de Empezar con Kuri. 
       </p>
 
       {/* Nombre */}
