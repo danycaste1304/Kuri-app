@@ -395,17 +395,17 @@ function App() {
                     <div
                       className="
                         absolute inset-x-0
-                        bottom-[3rem]        /* 🔽 KURI MÁS ABAJO */
-                        md:bottom-[-1rem]  
-                        lg:bottom-[-2rem]  
+                        bottom-[3.5rem]      /* 🔽 apenas más abajo */
+                        md:bottom-[-1rem]
+                        lg:bottom-[-2rem]
                         flex justify-center
                       "
                     >
                       <div
                         className="
                           relative
-                          w-[13rem] h-[16rem]     /* 🔽 KURI MÁS PEQUEÑO */
-                          md:w-[15rem] md:h-[18rem]
+                          w-[15rem] h-[18rem]       /* 🔽 solo un poquito más pequeño */
+                          md:w-[17rem] md:h-[20rem]
                           flex items-end justify-center
                         "
                       >
@@ -413,7 +413,7 @@ function App() {
                         <img
                           src={petImageState}
                           alt="Mascota financiera"
-                          className="w-full h-full object-contain object-bottom drop-shadow-[0_0_18px_rgba(0,255,200,0.35)]" 
+                          className="w-full h-full object-contain object-bottom drop-shadow-[0_0_20px_rgba(0,255,200,0.40)]"
                         />
 
                         {/* ACCESORIO */}
@@ -432,6 +432,7 @@ function App() {
                       </div>
                     </div>
                   </div>
+
 
                 </div>
               </main>
