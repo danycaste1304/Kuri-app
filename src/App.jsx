@@ -9,7 +9,7 @@ import fondo1 from "./assets/Fondo1.png";
 import SplashScreen from "./SplashScreen";
 
 /* ===========================================
-   🔹 1. DATOS FICTICIOS COHERENTES (MVP)
+   1. DATOS FICTICIOS COHERENTES (MVP)
    =========================================== */
 
 const MOCK_USER = {
@@ -17,8 +17,8 @@ const MOCK_USER = {
 };
 
 const MOCK_BANK = {
-  bankName: "Banco Kuri Joven",
-  last4: "5678",
+  bankName: "Banco Pichincha",
+  last4: "1234",
 };
 
 const MOCK_MONTHLY_BUDGET = 400;
@@ -42,13 +42,13 @@ const MOCK_TRANSACTIONS = [
 const MOCK_SAVINGS_GOAL = 80;
 
 /* ===========================================
-   🔹 2. CONFIGURACIÓN DE MOODS DE KURI
+   2. MOODS DE KURI
    =========================================== */
 
 const MOOD_THRESHOLDS = {
-  HAPPY_MAX: 50,     // < 50% del presupuesto usado
-  NEUTRAL_MAX: 90,   // 50–90%
-  WORRIED_MAX: 100,  // 90–100%
+  HAPPY_MAX: 50,
+  NEUTRAL_MAX: 90,
+  WORRIED_MAX: 100,
 };
 
 const MOOD_CONFIG = {
@@ -71,7 +71,7 @@ const MOOD_CONFIG = {
 };
 
 /* ===========================================
-   🔹 3. LÓGICA FINANCIERA Y DE KURI
+   3. LÓGICA FINANCIERA
    =========================================== */
 
 function getMonthlySummary(transactions, monthlyBudget) {
@@ -141,7 +141,7 @@ function generateMonthlyChallenge(lastMonthSpent, currentSpent) {
 }
 
 /* ===========================================
-   🔹 4. COMPONENTE PRINCIPAL
+   4. COMPONENTE PRINCIPAL
    =========================================== */
 
 function App() {
@@ -184,7 +184,7 @@ function App() {
     return () => clearTimeout(timer);
   }, [screen, summary.percentage]);
 
-  // 🎯 ACCESORIOS RESPONSIVOS (100% PORCENTAJES)
+  // 🎯 ACCESORIOS RESPONSIVOS
   const accessoryStyles = {
     armadillo: {
       sombrero: { top: "6%", left: "50%", width: "55%", transform: "translateX(-50%)" },
@@ -240,7 +240,7 @@ function App() {
 
   return (
     <div
-      className="min-h-[100dvh] w-full bg-cover bg-center relative flex justify-center items-stretch"
+      className="min-h-[100dvh] w-full bg-cover bg-center relative"
       style={{
         backgroundImage: `url(${fondo1})`,
         backgroundSize: "cover",
@@ -248,8 +248,8 @@ function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* CONTENEDOR TIPO CELULAR */}
-      <div className="w-full max-w-[480px] min-h-[100dvh] bg-black/45 flex flex-col">
+      {/* CONTENIDO PRINCIPAL: ahora ocupa TODO el ancho */}
+      <div className="w-full min-h-[100dvh] bg-black/45 flex flex-col">
         {/* SPLASH */}
         {screen === "splash" && (
           <SplashScreen onFinish={() => setScreen("onboarding")} />
@@ -272,10 +272,10 @@ function App() {
         {screen === "home" && (
           <div className="flex-1 w-full flex flex-col bg-black/40">
             {/* HEADER */}
-            <header className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4 gap-3">
-              {/* IZQUIERDA: CUENTA VINCULADA (más compacta) */}
-              <div className="flex items-center gap-2 max-w-[60%]">
-                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-400/90 flex items-center justify-center border border-emerald-300 text-slate-950 font-bold text-xs md:text-sm">
+            <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 gap-3">
+              {/* IZQUIERDA: CUENTA VINCULADA */}
+              <div className="flex items-center gap-2 max-w-[65%]">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-emerald-400/90 flex items-center justify-center border border-emerald-300 text-slate-950 font-bold text-xs md:text-sm">
                   <span>{initials}</span>
                 </div>
 
@@ -284,13 +284,13 @@ function App() {
                     Cuenta vinculada
                   </span>
 
-                  <span className="text-[11px] md:text-xs font-semibold text-slate-50 truncate max-w-[150px]">
+                  <span className="text-[11px] md:text-xs font-semibold text-slate-50 truncate">
                     {bankLabel}
                   </span>
                 </div>
               </div>
 
-              {/* DERECHA: MONEDAS + NIVEL DE KURI */}
+              {/* DERECHA: MONEDAS + NIVEL */}
               <div className="flex flex-col items-end gap-1">
                 <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
                   <span className="text-lg">🪙</span>
@@ -298,7 +298,6 @@ function App() {
                     {coins}
                   </span>
                 </div>
-
                 <div className="text-right leading-tight">
                   <span className="block text-[10px] text-emerald-200">
                     Nivel de Kuri
@@ -310,9 +309,9 @@ function App() {
               </div>
             </header>
 
-            {/* TARJETA DE RESUMEN FINANCIERO */}
-            <div className="px-4 md:px-8 mt-2 flex flex-col gap-2">
-              <div className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl px-3 py-2 shadow-md">
+            {/* TARJETA RESUMEN FINANCIERO */}
+            <div className="px-4 md:px-6 mt-1 flex flex-col gap-2">
+              <div className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl px-3 py-3 shadow-md">
                 <div className="flex items-center justify-between mb-1">
                   <h2 className="text-xs md:text-sm font-semibold text-emerald-100">
                     Tu mes con Kuri 💛
@@ -354,14 +353,14 @@ function App() {
 
             {/* NOTIFICACIÓN */}
             {spendingAlert && (
-              <div className="px-4 md:px-8 mt-2">
+              <div className="px-4 md:px-6 mt-2">
                 <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
                   <div className="text-xl pt-0.5">🐾</div>
                   <div className="flex-1">
                     <p className="text-xs md:text-sm text-amber-100">
                       Oye, ya usamos casi todo tu presupuesto de este mes. A
-                      veces te mereces un gustito 💚, pero cuidemos tu
-                      ahorro… y también a mí.
+                      veces te mereces un gustito 💚, pero cuidemos tu ahorro…
+                      y también a mí.
                     </p>
                   </div>
                   <button
@@ -377,9 +376,9 @@ function App() {
             {/* MAIN: BURBUJA + KURI */}
             <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
               <div className="relative flex flex-col items-center w-full max-w-md flex-1">
-                {/* BURBUJA DE TEXTO CON MOOD */}
+                {/* BURBUJA DE TEXTO */}
                 <div className="mt-6 md:mt-8 mb-2 w-full flex justify-center px-3 animate-fadeIn">
-                  <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                  <div className="relative w-full max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
                     <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
                     <h1 className="text-base md:text-lg font-bold text-emerald-100">
                       ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾{" "}
@@ -393,23 +392,8 @@ function App() {
 
                 {/* ESCENARIO / MASCOTA */}
                 <div className="relative w-full flex-1">
-                  <div
-                    className="
-                      absolute inset-x-0
-                      bottom-[4rem]
-                      md:bottom-[-2rem]
-                      lg:bottom-[-3rem]
-                      flex justify-center
-                    "
-                  >
-                    <div
-                      className="
-                        relative
-                        w-[16rem] h-[19rem]
-                        md:w-[18rem] md:h-[21rem]
-                        flex items-end justify-center
-                      "
-                    >
+                  <div className="absolute inset-x-0 bottom-[4rem] md:bottom-[-2rem] lg:bottom-[-3rem] flex justify-center">
+                    <div className="relative w-[16rem] h-[19rem] md:w-[18rem] md:h-[21rem] flex items-end justify-center">
                       <img
                         src={petImageState}
                         alt="Mascota financiera"
@@ -436,7 +420,7 @@ function App() {
 
             {/* NAV */}
             <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
-              <div className="bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex gap-5 md:gap-8 shadow-lg backdrop-blur-md">
+              <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
                 {[
                   { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
                   { label: "Consejos", icon: "💡", action: () => setScreen("advice") },
@@ -446,10 +430,10 @@ function App() {
                   <button
                     key={btn.label}
                     onClick={btn.action}
-                    className="flex flex-col items-center text-xs md:text-base text-slate-200 hover:text-emerald-300 transition"
+                    className="flex flex-col items-center text-[11px] md:text-sm text-slate-200 hover:text-emerald-300 transition"
                   >
                     <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
-                      <span className="text-xl md:text-3xl">{btn.icon}</span>
+                      <span className="text-xl md:text-2xl">{btn.icon}</span>
                     </div>
                     {btn.label}
                   </button>
