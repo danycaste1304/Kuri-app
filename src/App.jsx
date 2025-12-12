@@ -12,7 +12,6 @@ import SplashScreen from "./SplashScreen";
    1) DATOS FICTICIOS COHERENTES (MVP)
    =========================================== */
 const MOCK_USER = { name: "Daniela" };
-
 const MOCK_BANK = { bankName: "Banco Pichincha", last4: "1234" };
 
 const MOCK_MONTHLY_BUDGET = 400;
@@ -174,7 +173,6 @@ export default function App() {
     ? `${bankInfo.bankName} · •••• ${bankInfo.last4}`
     : "Banco vinculado · •••• 1234";
 
-  // 🎯 Accesorios por mascota
   const accessoryStyles = {
     armadillo: {
       sombrero: { top: "6%", left: "50%", width: "55%", transform: "translateX(-50%)" },
@@ -203,7 +201,6 @@ export default function App() {
   };
 
   return (
-    // ✅ APP SHELL: ocupa la pantalla del móvil y NO deja scrollear el sitio
     <div
       className="w-full h-[100dvh] bg-cover bg-center relative"
       style={{
@@ -213,7 +210,6 @@ export default function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* overlay + layout fijo */}
       <div className="w-full h-[100dvh] bg-black/45 flex flex-col overflow-hidden">
         {/* SPLASH */}
         {screen === "splash" && (
@@ -235,185 +231,194 @@ export default function App() {
           </div>
         )}
 
-        {/* ✅ HOME (SCROLL INTERNO SOLO AQUÍ + NAVBAR STICKY) */}
+        {/* ✅ HOME: SCROLL SOLO PARA ALCANZAR NAVBAR (ESCENA STICKY, NO SE MUEVE) */}
         {screen === "home" && (
           <div className="flex-1 w-full flex flex-col min-h-0">
-            {/* CONTENIDO CON SCROLL INTERNO */}
-            <div
-              className="
-                flex-1 min-h-0 overflow-y-auto overscroll-contain
-                pb-[calc(110px+env(safe-area-inset-bottom))] 
-              "
-            >
-              {/* HEADER */}
-              <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 gap-3">
-                <div className="flex items-center gap-2 max-w-[65%]">
-                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-emerald-400/90 flex items-center justify-center border border-emerald-300 text-slate-950 font-bold text-xs md:text-sm">
-                    <span>{initials}</span>
-                  </div>
-                  <div className="flex flex-col overflow-hidden">
-                    <span className="text-[10px] md:text-[11px] text-slate-300">
-                      Cuenta vinculada
-                    </span>
-                    <span className="text-[11px] md:text-xs font-semibold text-slate-50 truncate">
-                      {bankLabel}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-end gap-1">
-                  <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
-                    <span className="text-lg">🪙</span>
-                    <span className="text-sm md:text-base font-semibold text-amber-300">
-                      {coins}
-                    </span>
-                  </div>
-                  <div className="text-right leading-tight">
-                    <span className="block text-[10px] text-emerald-200">
-                      Nivel de Kuri
-                    </span>
-                    <span className="text-[11px] md:text-xs font-semibold text-emerald-300">
-                      Lv. {kuriLevel} · {kuriXP} XP
-                    </span>
-                  </div>
-                </div>
-              </header>
-
-              {/* RESUMEN */}
-              <div className="px-4 md:px-6 mt-1">
-                <div className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl px-3 py-3 shadow-md">
-                  <div className="flex items-center justify-between mb-1">
-                    <h2 className="text-xs md:text-sm font-semibold text-emerald-100">
-                      Tu mes con Kuri 💛
-                    </h2>
-                    <span className="text-[11px] text-emerald-200">
-                      Presupuesto: ${monthlyBudget.toFixed(2)}
-                    </span>
-                  </div>
-                  <p className="text-[11px] md:text-xs text-slate-200">
-                    Gastado:{" "}
-                    <span className="font-semibold">
-                      ${summary.spentThisMonth.toFixed(2)}
-                    </span>{" "}
-                    · Te queda:{" "}
-                    <span className="font-semibold">
-                      ${summary.remaining.toFixed(2)}
-                    </span>
-                  </p>
-
-                  <div className="mt-2 h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{
-                        width: `${summary.percentage}%`,
-                        backgroundColor:
-                          summary.percentage <= 80
-                            ? "#4ade80"
-                            : summary.percentage <= 100
-                            ? "#facc15"
-                            : "#f97373",
-                      }}
-                    />
-                  </div>
-                  <p className="mt-1 text-[10px] text-slate-300">
-                    Has usado el {summary.percentage}% de tu presupuesto.
-                  </p>
-                </div>
-              </div>
-
-              {/* ALERTA */}
-              {spendingAlert && (
-                <div className="px-4 md:px-6 mt-2">
-                  <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
-                    <div className="text-xl pt-0.5">🐾</div>
-                    <div className="flex-1">
-                      <p className="text-xs md:text-sm text-amber-100">
-                        Oye, ya usamos casi todo tu presupuesto de este mes. Cuidemos tu ahorro 💚
-                      </p>
+            {/* Contenedor scrolleable interno */}
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+              {/* ✅ ESCENA COMPLETA PEGADA ARRIBA (NO SE MUEVE AL SCROLL) */}
+              <div className="sticky top-0 z-10">
+                {/* HEADER */}
+                <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 gap-3">
+                  <div className="flex items-center gap-2 max-w-[65%]">
+                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-emerald-400/90 flex items-center justify-center border border-emerald-300 text-slate-950 font-bold text-xs md:text-sm">
+                      <span>{initials}</span>
                     </div>
-                    <button
-                      onClick={() => setSpendingAlert(false)}
-                      className="ml-2 text-[11px] text-amber-200/80 hover:text-amber-100"
-                    >
-                      ✕
-                    </button>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-[10px] md:text-[11px] text-slate-300">
+                        Cuenta vinculada
+                      </span>
+                      <span className="text-[11px] md:text-xs font-semibold text-slate-50 truncate">
+                        {bankLabel}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
 
-              {/* ESCENA CENTRAL */}
-              <main className="w-full flex flex-col items-center px-3 pt-2 pb-4 gap-3">
-                {/* BURBUJA */}
-                <div className="w-full flex justify-center px-3 mt-2 animate-fadeIn">
-                  <div className="relative w-full max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
-                    <h1 className="text-base md:text-lg font-bold text-emerald-100">
-                      ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
-                    </h1>
-                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
-                      {moodData.text}
+                  <div className="flex flex-col items-end gap-1">
+                    <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
+                      <span className="text-lg">🪙</span>
+                      <span className="text-sm md:text-base font-semibold text-amber-300">
+                        {coins}
+                      </span>
+                    </div>
+                    <div className="text-right leading-tight">
+                      <span className="block text-[10px] text-emerald-200">
+                        Nivel de Kuri
+                      </span>
+                      <span className="text-[11px] md:text-xs font-semibold text-emerald-300">
+                        Lv. {kuriLevel} · {kuriXP} XP
+                      </span>
+                    </div>
+                  </div>
+                </header>
+
+                {/* RESUMEN */}
+                <div className="px-4 md:px-6 mt-1">
+                  <div className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl px-3 py-3 shadow-md">
+                    <div className="flex items-center justify-between mb-1">
+                      <h2 className="text-xs md:text-sm font-semibold text-emerald-100">
+                        Tu mes con Kuri 💛
+                      </h2>
+                      <span className="text-[11px] text-emerald-200">
+                        Presupuesto: ${monthlyBudget.toFixed(2)}
+                      </span>
+                    </div>
+                    <p className="text-[11px] md:text-xs text-slate-200">
+                      Gastado:{" "}
+                      <span className="font-semibold">${summary.spentThisMonth.toFixed(2)}</span>{" "}
+                      · Te queda:{" "}
+                      <span className="font-semibold">${summary.remaining.toFixed(2)}</span>
+                    </p>
+
+                    <div className="mt-2 h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-300"
+                        style={{
+                          width: `${summary.percentage}%`,
+                          backgroundColor:
+                            summary.percentage <= 80
+                              ? "#4ade80"
+                              : summary.percentage <= 100
+                              ? "#facc15"
+                              : "#f97373",
+                        }}
+                      />
+                    </div>
+                    <p className="mt-1 text-[10px] text-slate-300">
+                      Has usado el {summary.percentage}% de tu presupuesto.
                     </p>
                   </div>
                 </div>
 
-                {/* MASCOTA (responsive con clamp para pantallas pequeñas) */}
-                <div className="w-full flex justify-center mt-1">
-                  <div
-                    className="relative flex items-end justify-center"
-                    style={{
-                      width: "min(16rem, 78vw)",
-                      height: "clamp(12rem, 42vh, 20.5rem)",
-                    }}
-                  >
-                    <img
-                      src={petImageState}
-                      alt="Mascota financiera"
-                      className="w-full h-full object-contain object-bottom drop-shadow-[0_0_20px_rgba(0,255,200,0.40)]"
-                    />
-
-                    {accessory && (
-                      <img
-                        src={accessory.img}
-                        alt={accessory.label}
-                        className="absolute object-contain"
-                        style={
-                          (accessoryStyles[currentPetId] &&
-                            accessoryStyles[currentPetId][accessory.id]) ||
-                          accessoryStyles.default[accessory.id]
-                        }
-                      />
-                    )}
-                  </div>
-                </div>
-              </main>
-            </div>
-
-            {/* NAVBAR STICKY */}
-            <nav className="sticky bottom-0 shrink-0 w-full px-4 pb-[calc(4px+env(safe-area-inset-bottom))] pt-1 flex justify-center bg-black/0">
-              <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
-                {[
-                  { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
-                  { label: "Consejos", icon: "💡", action: () => setScreen("advice") },
-                  { label: "Tu objetivo", icon: "🎯", action: () => setScreen("savings") },
-                  { label: "Mascota", icon: "🐾", action: () => setScreen("customize") },
-                ].map((btn) => (
-                  <button
-                    key={btn.label}
-                    onClick={btn.action}
-                    className="flex flex-col items-center text-[11px] md:text-sm text-slate-200 hover:text-emerald-300 transition"
-                  >
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
-                      <span className="text-xl md:text-2xl">{btn.icon}</span>
+                {/* ALERTA */}
+                {spendingAlert && (
+                  <div className="px-4 md:px-6 mt-2">
+                    <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
+                      <div className="text-xl pt-0.5">🐾</div>
+                      <div className="flex-1">
+                        <p className="text-xs md:text-sm text-amber-100">
+                          Oye, ya usamos casi todo tu presupuesto de este mes. Cuidemos tu ahorro 💚
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setSpendingAlert(false)}
+                        className="ml-2 text-[11px] text-amber-200/80 hover:text-amber-100"
+                      >
+                        ✕
+                      </button>
                     </div>
-                    {btn.label}
-                  </button>
-                ))}
+                  </div>
+                )}
+
+                {/* ESCENA CENTRAL (MISMA POSICIÓN QUE ANTES) */}
+                <main
+                  className="
+                    w-full flex flex-col items-center justify-between
+                    px-3 pt-2
+                    pb-[2rem]
+                  "
+                >
+                  {/* BURBUJA */}
+                  <div className="w-full flex justify-center px-3 mt-2 animate-fadeIn">
+                    <div className="relative w-full max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
+                      <h1 className="text-base md:text-lg font-bold text-emerald-100">
+                        ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾{" "}
+                        {moodData.emoji}
+                      </h1>
+                      <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
+                        {moodData.text}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* MASCOTA */}
+                  <div className="w-full flex justify-center mt-2">
+                    <div
+                      className="
+                        relative
+                        w-[16rem] h-[19rem]
+                        md:w-[17.5rem] md:h-[20.5rem]
+                        flex items-end justify-center
+                      "
+                    >
+                      <img
+                        src={petImageState}
+                        alt="Mascota financiera"
+                        className="w-full h-full object-contain object-bottom drop-shadow-[0_0_20px_rgba(0,255,200,0.40)]"
+                      />
+
+                      {accessory && (
+                        <img
+                          src={accessory.img}
+                          alt={accessory.label}
+                          className="absolute object-contain"
+                          style={
+                            (accessoryStyles[currentPetId] &&
+                              accessoryStyles[currentPetId][accessory.id]) ||
+                            accessoryStyles.default[accessory.id]
+                          }
+                        />
+                      )}
+                    </div>
+                  </div>
+                </main>
               </div>
-            </nav>
+
+              {/* ✅ “ESPACIO SCROLLEABLE” SOLO EN PANTALLAS CHIQUITAS PARA LLEGAR A LA NAVBAR */}
+              <div className="h-0 sm:h-0" />
+              <div className="h-[28vh] sm:hidden" />
+
+              {/* NAVBAR (va dentro del scroll, así el user “baja” a verla) */}
+              <nav className="w-full px-4 pb-6 pt-2 flex justify-center">
+                <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
+                  {[
+                    { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
+                    { label: "Consejos", icon: "💡", action: () => setScreen("advice") },
+                    { label: "Tu objetivo", icon: "🎯", action: () => setScreen("savings") },
+                    { label: "Mascota", icon: "🐾", action: () => setScreen("customize") },
+                  ].map((btn) => (
+                    <button
+                      key={btn.label}
+                      onClick={btn.action}
+                      className="flex flex-col items-center text-[11px] md:text-sm text-slate-200 hover:text-emerald-300 transition"
+                    >
+                      <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-800 flex items-center justify-center mb-1 border border-slate-700">
+                        <span className="text-xl md:text-2xl">{btn.icon}</span>
+                      </div>
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
+              </nav>
+
+              {/* Safe-area extra por si iPhone */}
+              <div className="h-[env(safe-area-inset-bottom)]" />
+            </div>
           </div>
         )}
 
-        {/* ✅ PANTALLAS CON SCROLL INTERNO (NO SCROLL DEL SITIO) */}
+        {/* ✅ PANTALLAS CON SCROLL INTERNO */}
         {screen === "customize" && (
           <div className="flex-1 w-full overflow-y-auto overscroll-contain bg-black/70">
             <CustomizeScreen
