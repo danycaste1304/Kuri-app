@@ -335,7 +335,7 @@ export default function App() {
               className="
                 flex-1 flex flex-col items-center justify-between
                 px-3 pt-2
-                pb-[5.5rem]   /* ✅ reserva espacio real para que la mascota nunca tape la burbuja ni la navbar */
+                pb-[4.5rem]   /* ✅ reserva espacio real para que la mascota nunca tape la burbuja ni la navbar */
               "
             >
               {/* BURBUJA */}
@@ -384,7 +384,7 @@ export default function App() {
             </main>
 
             {/* NAVBAR FIJA */}
-            <nav className="shrink-0 w-full px-4 pb-3 pt-2 flex justify-center">
+            <nav className="shrink-0 w-full px-4 pb-1 pt-1 flex justify-center">
               <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
                 {[
                   { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
