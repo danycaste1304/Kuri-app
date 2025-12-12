@@ -17,7 +17,8 @@ export default function SavingsGoalScreen({
   );
   const longTermGoal = parseFloat(longTermGoalInput) || 0;
 
-  const HORIZON_STEPS = [1, 2, 3, 5, 6];
+  // 👇 ahora el mínimo son 3 meses
+  const HORIZON_STEPS = [3, 5, 6, 9, 12];
   const [horizonIndex, setHorizonIndex] = useState(0);
   const currentHorizonMonths = HORIZON_STEPS[horizonIndex];
   const nextHorizonMonths =
@@ -26,7 +27,7 @@ export default function SavingsGoalScreen({
   // ====== META CORTO PLAZO ======
   const [shortTermMode, setShortTermMode] = useState("week"); // "week" | "month"
 
-  const suggestedShortTerm =
+  const baseSuggestedShortTerm =
     longTermGoal > 0
       ? shortTermMode === "week"
         ? longTermGoal / (currentHorizonMonths * 4)
@@ -34,11 +35,26 @@ export default function SavingsGoalScreen({
       : 0;
 
   const [shortTermGoalInput, setShortTermGoalInput] = useState(
-    suggestedShortTerm ? String(suggestedShortTerm.toFixed(2)) : ""
+    baseSuggestedShortTerm ? String(baseSuggestedShortTerm.toFixed(2)) : ""
   );
+
   const shortTermGoal =
     parseFloat(shortTermGoalInput) ||
-    (suggestedShortTerm > 0 ? suggestedShortTerm : 0);
+    (baseSuggestedShortTerm > 0 ? baseSuggestedShortTerm : 0);
+
+  // 👉 cuando cambiamos de weekly a monthly, recalculamos el valor sugerido
+  const handleChangeShortTermMode = (mode) => {
+    setShortTermMode(mode);
+
+    if (longTermGoal > 0) {
+      const newSuggested =
+        mode === "week"
+          ? longTermGoal / (currentHorizonMonths * 4)
+          : longTermGoal / currentHorizonMonths;
+
+      setShortTermGoalInput(newSuggested.toFixed(2));
+    }
+  };
 
   // ====== HÁBITO / TARRITO ======
   const [periodsCompleted, setPeriodsCompleted] = useState(0);
@@ -63,14 +79,17 @@ export default function SavingsGoalScreen({
   const handleClaimCoupon = () => {
     if (!goalReached || couponClaimed) return;
     setCouponClaimed(true);
+
+    // cuando reclamas, alargamos el horizonte (3 → 5 → 6 → ...)
     if (horizonIndex < HORIZON_STEPS.length - 1) {
       setHorizonIndex((idx) => idx + 1);
     }
   };
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black/80 text-white flex justify-center">
-      <div className="w-full max-w-[960px] px-4 py-5 md:px-8 md:py-6 flex flex-col gap-4">
+    <div className="h-[100dvh] w-full bg-black/80 text-white flex justify-center">
+      {/* 👇 ESTE DIV ES EL QUE SCROLLEA */}
+      <div className="w-full max-w-[960px] px-4 py-5 md:px-8 md:py-6 flex flex-col gap-4 overflow-y-auto">
         {/* HEADER */}
         <div className="flex items-center justify-between mb-2">
           <button
@@ -239,7 +258,7 @@ export default function SavingsGoalScreen({
                     ? "bg-emerald-400 text-slate-900 border-emerald-300"
                     : "bg-slate-800 text-slate-200 border-slate-600"
                 }`}
-                onClick={() => setShortTermMode("week")}
+                onClick={() => handleChangeShortTermMode("week")}
               >
                 Meta semanal
               </button>
@@ -249,7 +268,7 @@ export default function SavingsGoalScreen({
                     ? "bg-emerald-400 text-slate-900 border-emerald-300"
                     : "bg-slate-800 text-slate-200 border-slate-600"
                 }`}
-                onClick={() => setShortTermMode("month")}
+                onClick={() => handleChangeShortTermMode("month")}
               >
                 Meta mensual
               </button>
@@ -263,7 +282,10 @@ export default function SavingsGoalScreen({
               </label>
               <input
                 type="number"
-                value={shortTermGoalInput || (shortTermGoal ? shortTermGoal : "")}
+                value={
+                  shortTermGoalInput ||
+                  (shortTermGoal ? shortTermGoal.toFixed(2) : "")
+                }
                 onChange={(e) => setShortTermGoalInput(e.target.value)}
                 className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
                 placeholder={
@@ -332,7 +354,7 @@ export default function SavingsGoalScreen({
         )}
 
         {/* BONUS HÁBITO = CUPÓN */}
-        <section className="bg-slate-900/80 border border-emerald-500/40 rounded-2xl p-4">
+        <section className="bg-slate-900/80 border border-emerald-500/40 rounded-2xl p-4 mb-2">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div>
               <h2 className="text-sm md:text-base font-semibold flex items-center gap-2">
