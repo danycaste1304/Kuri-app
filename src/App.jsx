@@ -240,7 +240,7 @@ function App() {
 
   return (
     <div
-      className="min-h-[100dvh] w-full bg-cover bg-center relative"
+      className="h-[100dvh] w-full bg-cover bg-center relative overflow-hidden"
       style={{
         backgroundImage: `url(${fondo1})`,
         backgroundSize: "cover",
@@ -248,8 +248,8 @@ function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* CONTENIDO PRINCIPAL: ahora ocupa TODO el ancho */}
-      <div className="w-full min-h-[100dvh] bg-black/45 flex flex-col">
+      {/* CONTENIDO PRINCIPAL: ocupa toda la altura de la pantalla */}
+      <div className="w-full h-full bg-black/45 flex flex-col">
         {/* SPLASH */}
         {screen === "splash" && (
           <SplashScreen onFinish={() => setScreen("onboarding")} />
@@ -257,7 +257,7 @@ function App() {
 
         {/* ONBOARDING */}
         {screen === "onboarding" && (
-          <div className="min-h-[100dvh] w-full bg-black/70 flex items-center justify-center px-4">
+          <div className="h-[100dvh] w-full bg-black/70 flex items-center justify-center px-4">
             <OnboardingScreen
               onComplete={(user, bank) => {
                 setUserProfile(user || MOCK_USER);
@@ -374,57 +374,53 @@ function App() {
             )}
 
             {/* MAIN: BURBUJA + KURI */}
-              <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
-                <div className="flex flex-col items-center w-full max-w-md flex-1 justify-between">
-                  {/* BURBUJA DE TEXTO CON MOOD */}
-                  <div className="mt-6 md:mt-8 mb-2 w-full flex justify-center px-3 animate-fadeIn">
-                    <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
-                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
-                      <h1 className="text-base md:text-lg font-bold text-emerald-100">
-                        ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
-                      </h1>
-                      <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
-                        {moodData.text}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* ESCENARIO / MASCOTA */}
-                  <div className="mt-2 mb-4 w-full flex justify-center">
-                    <div
-                      className="
-                        relative
-                        w-[15.5rem] h-[18.5rem]    /* tamaño un poquito más grande pero controlado */
-                        md:w-[17rem] md:h-[20rem]
-                        flex items-end justify-center
-                      "
-                    >
-                      {/* MASCOTA */}
-                      <img
-                        src={petImageState}
-                        alt="Mascota financiera"
-                        className="w-full h-full object-contain object-bottom drop-shadow-[0_0_20px_rgba(0,255,200,0.40)]"
-                      />
-
-                      {/* ACCESORIO */}
-                      {accessory && (
-                        <img
-                          src={accessory.img}
-                          alt={accessory.label}
-                          className="absolute object-contain"
-                          style={
-                            (accessoryStyles[currentPetId] &&
-                              accessoryStyles[currentPetId][accessory.id]) ||
-                            accessoryStyles.default[accessory.id]
-                          }
-                        />
-                      )}
-                    </div>
+            <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
+              <div className="flex flex-col items-center w-full max-w-md flex-1 justify-between">
+                {/* BURBUJA DE TEXTO CON MOOD */}
+                <div className="mt-6 md:mt-8 mb-2 w-full flex justify-center px-3 animate-fadeIn">
+                  <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
+                    <h1 className="text-base md:text-lg font-bold text-emerald-100">
+                      ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
+                    </h1>
+                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
+                      {moodData.text}
+                    </p>
                   </div>
                 </div>
-              </main>
 
+                {/* ESCENARIO / MASCOTA */}
+                <div className="mt-2 mb-4 w-full flex justify-center">
+                  <div
+                    className="
+                      relative
+                      w-[15.5rem] h-[18.5rem]
+                      md:w-[17rem] md:h-[20rem]
+                      flex items-end justify-center
+                    "
+                  >
+                    <img
+                      src={petImageState}
+                      alt="Mascota financiera"
+                      className="w-full h-full object-contain object-bottom drop-shadow-[0_0_20px_rgba(0,255,200,0.40)]"
+                    />
 
+                    {accessory && (
+                      <img
+                        src={accessory.img}
+                        alt={accessory.label}
+                        className="absolute object-contain"
+                        style={
+                          (accessoryStyles[currentPetId] &&
+                            accessoryStyles[currentPetId][accessory.id]) ||
+                          accessoryStyles.default[accessory.id]
+                        }
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </main>
 
             {/* NAV */}
             <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
@@ -453,7 +449,7 @@ function App() {
 
         {/* PERSONALIZAR */}
         {screen === "customize" && (
-          <div className="min-h-[100dvh] w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70">
             <CustomizeScreen
               currentAccessory={accessory}
               selectedPetId={currentPetId}
@@ -490,8 +486,9 @@ function App() {
           </div>
         )}
 
+        {/* GASTOS */}
         {screen === "expenses" && (
-          <div className="min-h-screen w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70">
             <ExpensesScreen
               onBack={() => setScreen("home")}
               transactions={transactions}
@@ -502,10 +499,9 @@ function App() {
           </div>
         )}
 
-
         {/* CONSEJOS */}
         {screen === "advice" && (
-          <div className="min-h-[100dvh] w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70">
             <AdviceScreen
               onBack={() => setScreen("home")}
               summary={summary}
@@ -517,7 +513,7 @@ function App() {
 
         {/* AHORRO / TU OBJETIVO */}
         {screen === "savings" && (
-          <div className="min-h-[100dvh] w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70">
             <SavingsGoalScreen
               onBack={() => setScreen("home")}
               onEarnCoins={(amount) => setCoins((c) => c + amount)}
