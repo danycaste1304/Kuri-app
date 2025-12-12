@@ -161,15 +161,13 @@ export default function App() {
 
     const timer = setTimeout(() => {
       if (summary.percentage >= 90) setSpendingAlert(true);
-    }, 8000); // un poquito más rápido para demo
+    }, 8000);
 
     return () => clearTimeout(timer);
   }, [screen, summary.percentage]);
 
-  // ✅ Donde configuras moods:
   const moodData = MOOD_CONFIG[kuriMood] || MOOD_CONFIG.neutral;
 
-  // ✅ Header data
   const displayName = userProfile?.name || "Usuario";
   const initials = displayName.charAt(0).toUpperCase();
   const bankLabel = bankInfo
@@ -237,47 +235,134 @@ export default function App() {
           </div>
         )}
 
-        {/* HOME (NO SCROLL) */}
+        {/* ✅ HOME (SCROLL INTERNO SOLO AQUÍ + NAVBAR STICKY) */}
         {screen === "home" && (
           <div className="flex-1 w-full flex flex-col min-h-0">
-            {/* ✅ CONTENIDO CON SCROLL INTERNO */}
+            {/* CONTENIDO CON SCROLL INTERNO */}
             <div
               className="
                 flex-1 min-h-0 overflow-y-auto overscroll-contain
-                pb-[calc(110px+env(safe-area-inset-bottom))]  /* espacio real para navbar */
+                pb-[calc(110px+env(safe-area-inset-bottom))] 
               "
             >
               {/* HEADER */}
               <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 gap-3">
-                {/* ...tu header igual... */}
+                <div className="flex items-center gap-2 max-w-[65%]">
+                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-emerald-400/90 flex items-center justify-center border border-emerald-300 text-slate-950 font-bold text-xs md:text-sm">
+                    <span>{initials}</span>
+                  </div>
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="text-[10px] md:text-[11px] text-slate-300">
+                      Cuenta vinculada
+                    </span>
+                    <span className="text-[11px] md:text-xs font-semibold text-slate-50 truncate">
+                      {bankLabel}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
+                    <span className="text-lg">🪙</span>
+                    <span className="text-sm md:text-base font-semibold text-amber-300">
+                      {coins}
+                    </span>
+                  </div>
+                  <div className="text-right leading-tight">
+                    <span className="block text-[10px] text-emerald-200">
+                      Nivel de Kuri
+                    </span>
+                    <span className="text-[11px] md:text-xs font-semibold text-emerald-300">
+                      Lv. {kuriLevel} · {kuriXP} XP
+                    </span>
+                  </div>
+                </div>
               </header>
 
               {/* RESUMEN */}
               <div className="px-4 md:px-6 mt-1">
-                {/* ...tu resumen igual... */}
+                <div className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl px-3 py-3 shadow-md">
+                  <div className="flex items-center justify-between mb-1">
+                    <h2 className="text-xs md:text-sm font-semibold text-emerald-100">
+                      Tu mes con Kuri 💛
+                    </h2>
+                    <span className="text-[11px] text-emerald-200">
+                      Presupuesto: ${monthlyBudget.toFixed(2)}
+                    </span>
+                  </div>
+                  <p className="text-[11px] md:text-xs text-slate-200">
+                    Gastado:{" "}
+                    <span className="font-semibold">
+                      ${summary.spentThisMonth.toFixed(2)}
+                    </span>{" "}
+                    · Te queda:{" "}
+                    <span className="font-semibold">
+                      ${summary.remaining.toFixed(2)}
+                    </span>
+                  </p>
+
+                  <div className="mt-2 h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${summary.percentage}%`,
+                        backgroundColor:
+                          summary.percentage <= 80
+                            ? "#4ade80"
+                            : summary.percentage <= 100
+                            ? "#facc15"
+                            : "#f97373",
+                      }}
+                    />
+                  </div>
+                  <p className="mt-1 text-[10px] text-slate-300">
+                    Has usado el {summary.percentage}% de tu presupuesto.
+                  </p>
+                </div>
               </div>
 
               {/* ALERTA */}
               {spendingAlert && (
                 <div className="px-4 md:px-6 mt-2">
-                  {/* ...tu alerta igual... */}
+                  <div className="flex items-start gap-3 bg-slate-900/90 border border-amber-300/60 rounded-2xl px-3 py-2 shadow-md shadow-amber-500/20">
+                    <div className="text-xl pt-0.5">🐾</div>
+                    <div className="flex-1">
+                      <p className="text-xs md:text-sm text-amber-100">
+                        Oye, ya usamos casi todo tu presupuesto de este mes. Cuidemos tu ahorro 💚
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setSpendingAlert(false)}
+                      className="ml-2 text-[11px] text-amber-200/80 hover:text-amber-100"
+                    >
+                      ✕
+                    </button>
+                  </div>
                 </div>
               )}
 
-              {/* ✅ ESCENA CENTRAL (AHORA DENTRO DEL SCROLL) */}
-              <main className="w-full flex flex-col items-center px-3 pt-2 gap-3">
+              {/* ESCENA CENTRAL */}
+              <main className="w-full flex flex-col items-center px-3 pt-2 pb-4 gap-3">
                 {/* BURBUJA */}
                 <div className="w-full flex justify-center px-3 mt-2 animate-fadeIn">
-                  {/* ...tu burbuja igual... */}
+                  <div className="relative w-full max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
+                    <h1 className="text-base md:text-lg font-bold text-emerald-100">
+                      ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
+                    </h1>
+                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
+                      {moodData.text}
+                    </p>
+                  </div>
                 </div>
 
-                {/* ✅ MASCOTA RESPONSIVE: no se choca con la burbuja en pantallas chiquitas */}
-                <div className="w-full flex justify-center">
+                {/* MASCOTA (responsive con clamp para pantallas pequeñas) */}
+                <div className="w-full flex justify-center mt-1">
                   <div
                     className="relative flex items-end justify-center"
                     style={{
                       width: "min(16rem, 78vw)",
-                      height: "clamp(12rem, 42vh, 20.5rem)", // clave para pantallas pequeñas
+                      height: "clamp(12rem, 42vh, 20.5rem)",
                     }}
                   >
                     <img
@@ -303,7 +388,7 @@ export default function App() {
               </main>
             </div>
 
-            {/* ✅ NAVBAR STICKY (siempre visible, sin empujar raro en pantallas chicas) */}
+            {/* NAVBAR STICKY */}
             <nav className="sticky bottom-0 shrink-0 w-full px-4 pb-[calc(4px+env(safe-area-inset-bottom))] pt-1 flex justify-center bg-black/0">
               <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
                 {[
@@ -327,7 +412,6 @@ export default function App() {
             </nav>
           </div>
         )}
-
 
         {/* ✅ PANTALLAS CON SCROLL INTERNO (NO SCROLL DEL SITIO) */}
         {screen === "customize" && (
