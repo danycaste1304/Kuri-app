@@ -31,6 +31,9 @@ const ACCESSORIES = [
   { id: "guitarra", label: "Guitarra", img: Guitarra, price: 35 },
 ];
 
+// 🐷🦉🦊 Mascotas que aún no están listas a nivel de accesorios
+const UPCOMING_PETS = ["cerdito", "buho", "zorro"];
+
 export default function CustomizeScreen({
   currentAccessory,
   selectedPetId,
@@ -45,77 +48,97 @@ export default function CustomizeScreen({
 }) {
   const [mode, setMode] = useState("accessories");
 
+  // 🔒 Lógica central para clic en mascota
+  const handlePetClick = (pet, isOwned) => {
+    // Si ya es tuya, simplemente la seleccionas
+    if (isOwned) {
+      onSelectPet(pet);
+      return;
+    }
+
+    // Si es una mascota "próximamente", mostramos mensaje y NO cobramos monedas
+    if (UPCOMING_PETS.includes(pet.id)) {
+      alert(
+        `Esta mascota (${pet.nombre}) llegará próximamente a Kuri 🐾\n\nPor ahora solo es un preview, no te vamos a quitar monedas todavía.`
+      );
+      return;
+    }
+
+    // Para el resto, intentamos comprar normalmente
+    onBuyPet(pet);
+  };
+
   return (
     <div className="min-h-screen w-full bg-black/80 text-white flex justify-center">
       <div className="w-full max-w-[480px] px-6 py-6">
-      {/* Botón volver */}
-      <button
-        className="mb-4 text-sm bg-slate-800 px-4 py-2 rounded-xl hover:bg-slate-700"
-        onClick={onBack}
-      >
-        ← Volver
-      </button>
-
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl md:text-3xl font-bold">
-          Personalizar mascota
-        </h1>
-
-        {/* Monedas actuales también aquí (opcional) */}
-        <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md text-sm">
-          <span>🪙</span>
-          <span className="font-semibold text-amber-300">{coins}</span>
-        </div>
-      </div>
-
-      {/* Barra de modos: huellita + accesorios */}
-      <div className="flex items-center gap-3 mb-6">
+        {/* Botón volver */}
         <button
-          onClick={() => setMode("pets")}
-          className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition
+          className="mb-4 text-sm bg-slate-800 px-4 py-2 rounded-xl hover:bg-slate-700"
+          onClick={onBack}
+        >
+          ← Volver
+        </button>
+
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold">
+            Personalizar mascota
+          </h1>
+
+          {/* Monedas actuales también aquí (opcional) */}
+          <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md text-sm">
+            <span>🪙</span>
+            <span className="font-semibold text-amber-300">{coins}</span>
+          </div>
+        </div>
+
+        {/* Barra de modos: huellita + accesorios */}
+        <div className="flex items-center gap-3 mb-6">
+          <button
+            onClick={() => setMode("pets")}
+            className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition
             ${
               mode === "pets"
                 ? "bg-emerald-400 text-slate-900 border-emerald-300"
                 : "bg-slate-800 text-slate-100 border-slate-600"
             }`}
-        >
-          🐾
-        </button>
+          >
+            🐾
+          </button>
 
-        <button
-          onClick={() => setMode("accessories")}
-          className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition
+          <button
+            onClick={() => setMode("accessories")}
+            className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition
             ${
               mode === "accessories"
                 ? "bg-emerald-400 text-slate-900 border-emerald-300"
                 : "bg-slate-800 text-slate-100 border-slate-600"
             }`}
-        >
-          🎀
-        </button>
+          >
+            🎀
+          </button>
 
-        <span className="text-sm md:text-base text-slate-300">
-          {mode === "accessories"
-            ? "Elige y compra accesorios para tu mascota"
-            : "Compra y cambia de mascota"}
-        </span>
-      </div>
+          <span className="text-sm md:text-base text-slate-300">
+            {mode === "accessories"
+              ? "Elige y compra accesorios para tu mascota"
+              : "Compra y cambia de mascota"}
+          </span>
+        </div>
 
-      {/* CONTENIDO SEGÚN MODO */}
-      {mode === "accessories" && (
-        <>
-          <h2 className="text-lg font-semibold mb-2">Accesorios</h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-6">
-            {ACCESSORIES.map((acc) => {
-              const isOwned = ownedAccessories.includes(acc.id);
+        {/* CONTENIDO SEGÚN MODO */}
+        {mode === "accessories" && (
+          <>
+            <h2 className="text-lg font-semibold mb-2">Accesorios</h2>
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+              {ACCESSORIES.map((acc) => {
+                const isOwned = ownedAccessories.includes(acc.id);
 
-              return (
-                <button
-                  key={acc.id}
-                  onClick={() =>
-                    isOwned ? onSelectAccessory(acc) : onBuyAccessory(acc)
-                  }
-                  className={`flex flex-col items-center bg-slate-900/80 p-3 rounded-2xl hover:bg-slate-800 border transition
+                return (
+                  <button
+                    key={acc.id}
+                    onClick={() =>
+                      isOwned ? onSelectAccessory(acc) : onBuyAccessory(acc)
+                    }
+                    className={`flex flex-col items-center bg-slate-900/80 p-3 rounded-2xl hover:bg-slate-800 border transition
                     ${
                       currentAccessory &&
                       currentAccessory.id === acc.id &&
@@ -123,104 +146,110 @@ export default function CustomizeScreen({
                         ? "border-emerald-400"
                         : "border-slate-700"
                     }`}
-                >
-                  <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
-                    <img
-                      src={acc.img}
-                      alt={acc.label}
-                      className="w-12 h-12 object-contain"
-                    />
+                  >
+                    <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={acc.img}
+                        alt={acc.label}
+                        className="w-12 h-12 object-contain"
+                      />
 
-                    {!isOwned && (
-                      <div className="absolute inset-0 bg-black/65 flex flex-col items-center justify-center text-[10px] rounded-full">
-                        <span className="text-amber-300 font-bold">
-                          🪙 {acc.price}
+                      {!isOwned && (
+                        <div className="absolute inset-0 bg-black/65 flex flex-col items-center justify-center text-[10px] rounded-full">
+                          <span className="text-amber-300 font-bold">
+                            🪙 {acc.price}
+                          </span>
+                          <span className="mt-1 text-[9px] text-slate-100">
+                            Toca para comprar
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs mt-2 text-center">
+                      {acc.label}
+                      {!isOwned && (
+                        <span className="block text-[10px] text-amber-300 mt-0.5">
+                          {acc.price} monedas
                         </span>
-                        <span className="mt-1 text-[9px] text-slate-100">
-                          Toca para comprar
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-xs mt-2 text-center">
-                    {acc.label}
-                    {!isOwned && (
-                      <span className="block text-[10px] text-amber-300 mt-0.5">
-                        {acc.price} monedas
-                      </span>
-                    )}
-                  </p>
-                </button>
-              );
-            })}
+                      )}
+                    </p>
+                  </button>
+                );
+              })}
 
-            {/* Botón para quitar accesorio */}
-            <button
-              onClick={() => onSelectAccessory(null)}
-              className="flex flex-col items-center bg-slate-900/80 p-3 rounded-2xl hover:bg-slate-800 border border-slate-700"
-            >
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-slate-800 flex items-center justify-center">
-                <span className="text-2xl">❌</span>
-              </div>
-              <p className="text-xs mt-2 text-center">Quitar accesorio</p>
-            </button>
-          </div>
-        </>
-      )}
+              {/* Botón para quitar accesorio */}
+              <button
+                onClick={() => onSelectAccessory(null)}
+                className="flex flex-col items-center bg-slate-900/80 p-3 rounded-2xl hover:bg-slate-800 border border-slate-700"
+              >
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-slate-800 flex items-center justify-center">
+                  <span className="text-2xl">❌</span>
+                </div>
+                <p className="text-xs mt-2 text-center">Quitar accesorio</p>
+              </button>
+            </div>
+          </>
+        )}
 
-      {mode === "pets" && (
-        <>
-          <h2 className="text-lg font-semibold mb-2">Elegir mascota</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            {MASCOTAS.map((m) => {
-              const isOwned = ownedPets.includes(m.id);
+        {mode === "pets" && (
+          <>
+            <h2 className="text-lg font-semibold mb-2">Elegir mascota</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+              {MASCOTAS.map((m) => {
+                const isOwned = ownedPets.includes(m.id);
+                const isUpcoming = UPCOMING_PETS.includes(m.id);
 
-              return (
-                <button
-                  key={m.id}
-                  onClick={() =>
-                    isOwned ? onSelectPet(m) : onBuyPet(m)
-                  }
-                  className={`bg-slate-900/80 p-3 rounded-2xl hover:bg-slate-800 border transition
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => handlePetClick(m, isOwned)}
+                    className={`bg-slate-900/80 p-3 rounded-2xl hover:bg-slate-800 border transition
                     ${
                       m.id === selectedPetId && isOwned
                         ? "border-emerald-400"
                         : "border-slate-700"
                     }`}
-                >
-                  <div className="w-full h-40 flex items-end justify-center relative overflow-hidden rounded-2xl">
-                    <img
-                      src={m.img}
-                      alt={m.nombre}
-                      className="max-h-full object-contain"
-                    />
+                  >
+                    <div className="w-full h-40 flex items-end justify-center relative overflow-hidden rounded-2xl">
+                      <img
+                        src={m.img}
+                        alt={m.nombre}
+                        className="max-h-full object-contain"
+                      />
 
-                    {!isOwned && (
-                      <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-xs">
-                        <span className="text-amber-300 font-bold">
-                          🪙 {m.price}
+                      {!isOwned && (
+                        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-xs">
+                          <span className="text-amber-300 font-bold">
+                            🪙 {m.price}
+                          </span>
+                          <span className="mt-1 text-[10px] text-slate-100">
+                            {isUpcoming
+                              ? "Próximamente"
+                              : "Toca para desbloquear"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-center mt-2 text-sm">
+                      {m.nombre}
+                      {!isOwned && (
+                        <span className="block text-[11px] text-amber-300 mt-0.5">
+                          {m.price} monedas
                         </span>
-                        <span className="mt-1 text-[10px] text-slate-100">
-                          Toca para desbloquear
+                      )}
+                      {isUpcoming && (
+                        <span className="block text-[10px] text-slate-400 mt-0.5">
+                          Llegará en una próxima versión ✨
                         </span>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-center mt-2 text-sm">
-                    {m.nombre}
-                    {!isOwned && (
-                      <span className="block text-[11px] text-amber-300 mt-0.5">
-                        {m.price} monedas
-                      </span>
-                    )}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </>
-      )}
-    </div>
+                      )}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

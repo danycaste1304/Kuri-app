@@ -8,48 +8,42 @@ export default function SavingsGoalScreen({
   monthlyChallenge,
   monthlyBudget,
 }) {
-  // ====== DATOS BASE DEL MES ======
   const spent = summary?.spentThisMonth ?? 0;
   const remaining = summary?.remaining ?? 0;
 
-  // ====== META LARGO PLAZO (KURI) ======
-  // Meta total sugerida (editable)
+  // ====== META LARGO PLAZO ======
   const [longTermGoalInput, setLongTermGoalInput] = useState(
     savingsGoal ? String(savingsGoal) : "300"
   );
   const longTermGoal = parseFloat(longTermGoalInput) || 0;
 
-  // Plazos que Kuri va ampliando con el hábito: 1 → 2 → 3 → 5 → 6 meses
   const HORIZON_STEPS = [1, 2, 3, 5, 6];
   const [horizonIndex, setHorizonIndex] = useState(0);
   const currentHorizonMonths = HORIZON_STEPS[horizonIndex];
   const nextHorizonMonths =
     HORIZON_STEPS[Math.min(horizonIndex + 1, HORIZON_STEPS.length - 1)];
 
-  // ====== META CORTO PLAZO (KURI) ======
-  // Usuario elige si quiere meta corta por semana o por mes
-  const [shortTermMode, setShortTermMode] = useState<"week" | "month">("week");
+  // ====== META CORTO PLAZO ======
+  const [shortTermMode, setShortTermMode] = useState("week"); // "week" | "month"
 
-  // Meta corta sugerida según meta larga y plazo
   const suggestedShortTerm =
     longTermGoal > 0
       ? shortTermMode === "week"
-        ? longTermGoal / (currentHorizonMonths * 4) // semanas
-        : longTermGoal / currentHorizonMonths // por mes
+        ? longTermGoal / (currentHorizonMonths * 4)
+        : longTermGoal / currentHorizonMonths
       : 0;
 
   const [shortTermGoalInput, setShortTermGoalInput] = useState(
     suggestedShortTerm ? String(suggestedShortTerm.toFixed(2)) : ""
   );
   const shortTermGoal =
-    parseFloat(shortTermGoalInput) || (suggestedShortTerm > 0 ? suggestedShortTerm : 0);
+    parseFloat(shortTermGoalInput) ||
+    (suggestedShortTerm > 0 ? suggestedShortTerm : 0);
 
-  // ====== HÁBITO / TARRITO (CORTO PLAZO) ======
-  // Cuántas veces has cumplido tu meta corta (simulado)
+  // ====== HÁBITO / TARRITO ======
   const [periodsCompleted, setPeriodsCompleted] = useState(0);
 
-  // Para el tarrito usamos el patrón que ya tenías (aprox por semanas)
-  const WEEKLY_COINS = 5; // seguimos dando moneditas por cada periodo cumplido 💰
+  const WEEKLY_COINS = 5;
 
   const approximateSaved = periodsCompleted * shortTermGoal;
   const progress =
@@ -63,23 +57,19 @@ export default function SavingsGoalScreen({
     onEarnCoins?.(WEEKLY_COINS);
   };
 
-  // ====== BONUS HÁBITO CONSTANTE (CUPÓN) ======
+  // ====== BONUS HÁBITO / CUPÓN ======
   const [couponClaimed, setCouponClaimed] = useState(false);
 
   const handleClaimCoupon = () => {
     if (!goalReached || couponClaimed) return;
-    // Aquí no damos monedas, solo "desbloqueamos" cupón
     setCouponClaimed(true);
-    // Podrías igual dar algunas monedas si quieres, pero la UI ahora habla de cupón
-    // onEarnCoins?.(20);
-    // Al reclamar el cupón, Kuri aumenta el plazo de la meta larga (crear hábito)
     if (horizonIndex < HORIZON_STEPS.length - 1) {
       setHorizonIndex((idx) => idx + 1);
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-black/80 text-white flex justify-center">
+    <div className="min-h-[100dvh] w-full bg-black/80 text-white flex justify-center">
       <div className="w-full max-w-[960px] px-4 py-5 md:px-8 md:py-6 flex flex-col gap-4">
         {/* HEADER */}
         <div className="flex items-center justify-between mb-2">
@@ -100,7 +90,7 @@ export default function SavingsGoalScreen({
           <div className="flex items-center justify-between">
             <span className="text-slate-300">Presupuesto mensual</span>
             <span className="font-semibold text-emerald-300">
-              ${monthlyBudget?.toFixed(2)}
+              ${(monthlyBudget ?? 0).toFixed(2)}
             </span>
           </div>
           <div className="flex items-center justify-between text-xs md:text-sm">
@@ -113,7 +103,7 @@ export default function SavingsGoalScreen({
           </div>
         </section>
 
-        {/* BLOQUE LARGO PLAZO + CORTO PLAZO */}
+        {/* BLOQUE LARGO PLAZO + TARRITO */}
         <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr] gap-4">
           {/* LARGO PLAZO */}
           <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4">
@@ -152,7 +142,7 @@ export default function SavingsGoalScreen({
               </div>
             </div>
 
-            {/* Progreso aproximado hacia la meta larga */}
+            {/* Progreso aproximado hacia meta larga */}
             <div className="mt-1">
               <div className="flex justify-between text-[11px] text-slate-300 mb-1">
                 <span>Progreso hacia tu meta larga</span>
@@ -191,16 +181,14 @@ export default function SavingsGoalScreen({
             </div>
           </section>
 
-          {/* TARRITO / DEMO */}
+          {/* TARRITO */}
           <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center">
             <h2 className="text-sm md:text-base font-semibold mb-2">
               Tarrito de ahorro 🫙
             </h2>
 
             <div className="relative w-20 h-40 md:w-24 md:h-48 mx-auto my-2 flex items-end justify-center">
-              {/* Contorno del tarro */}
               <div className="absolute inset-0 rounded-3xl border-2 border-emerald-300/80 bg-slate-950/60 overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.5)]">
-                {/* Líquido */}
                 <div
                   className={`absolute bottom-0 left-0 w-full transition-all duration-700 ${
                     goalReached ? "bg-emerald-300" : "bg-emerald-400/90"
@@ -209,7 +197,6 @@ export default function SavingsGoalScreen({
                 />
               </div>
 
-              {/* Tapita */}
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-3 md:w-16 md:h-3.5 rounded-t-xl bg-slate-200/90 border border-slate-400" />
             </div>
 
