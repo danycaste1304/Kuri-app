@@ -8,47 +8,74 @@ export default function SavingsGoalScreen({
   monthlyChallenge,
   monthlyBudget,
 }) {
-  // Objetivo editable (inicial viene de props)
-  const [goalInput, setGoalInput] = useState(
-    savingsGoal ? String(savingsGoal) : "300"
-  );
-  const numericGoal = parseFloat(goalInput) || 0;
-
-  // Semanas cumplidas
-  const [weeksCompleted, setWeeksCompleted] = useState(0);
-
-  // Recompensa larga
-  const [longTermRewardClaimed, setLongTermRewardClaimed] = useState(false);
-
-  // Parámetros de recompensa
-  const WEEKLY_COINS = 5;
-  const LONG_TERM_COINS = 50;
-
-  // Meta semanal sugerida: dividir objetivo en ~6 meses
-  const weeklyTarget =
-    numericGoal > 0 ? numericGoal / (6 * 4) : 0;
-
-  // Ahorro aproximado según semanas cumplidas
-  const approximateSaved = weeksCompleted * weeklyTarget;
-
-  const progress =
-    numericGoal > 0 ? (approximateSaved / numericGoal) * 100 : 0;
-  const clampedProgress = Math.min(progress, 100);
-  const goalReached = clampedProgress >= 100;
-
+  // ====== DATOS BASE DEL MES ======
   const spent = summary?.spentThisMonth ?? 0;
   const remaining = summary?.remaining ?? 0;
 
-  const handleWeekCompleted = () => {
-    if (!numericGoal || numericGoal <= 0) return;
-    setWeeksCompleted((prev) => prev + 1);
+  // ====== META LARGO PLAZO (KURI) ======
+  // Meta total sugerida (editable)
+  const [longTermGoalInput, setLongTermGoalInput] = useState(
+    savingsGoal ? String(savingsGoal) : "300"
+  );
+  const longTermGoal = parseFloat(longTermGoalInput) || 0;
+
+  // Plazos que Kuri va ampliando con el hábito: 1 → 2 → 3 → 5 → 6 meses
+  const HORIZON_STEPS = [1, 2, 3, 5, 6];
+  const [horizonIndex, setHorizonIndex] = useState(0);
+  const currentHorizonMonths = HORIZON_STEPS[horizonIndex];
+  const nextHorizonMonths =
+    HORIZON_STEPS[Math.min(horizonIndex + 1, HORIZON_STEPS.length - 1)];
+
+  // ====== META CORTO PLAZO (KURI) ======
+  // Usuario elige si quiere meta corta por semana o por mes
+  const [shortTermMode, setShortTermMode] = useState<"week" | "month">("week");
+
+  // Meta corta sugerida según meta larga y plazo
+  const suggestedShortTerm =
+    longTermGoal > 0
+      ? shortTermMode === "week"
+        ? longTermGoal / (currentHorizonMonths * 4) // semanas
+        : longTermGoal / currentHorizonMonths // por mes
+      : 0;
+
+  const [shortTermGoalInput, setShortTermGoalInput] = useState(
+    suggestedShortTerm ? String(suggestedShortTerm.toFixed(2)) : ""
+  );
+  const shortTermGoal =
+    parseFloat(shortTermGoalInput) || (suggestedShortTerm > 0 ? suggestedShortTerm : 0);
+
+  // ====== HÁBITO / TARRITO (CORTO PLAZO) ======
+  // Cuántas veces has cumplido tu meta corta (simulado)
+  const [periodsCompleted, setPeriodsCompleted] = useState(0);
+
+  // Para el tarrito usamos el patrón que ya tenías (aprox por semanas)
+  const WEEKLY_COINS = 5; // seguimos dando moneditas por cada periodo cumplido 💰
+
+  const approximateSaved = periodsCompleted * shortTermGoal;
+  const progress =
+    longTermGoal > 0 ? (approximateSaved / longTermGoal) * 100 : 0;
+  const clampedProgress = Math.min(progress, 100);
+  const goalReached = clampedProgress >= 100;
+
+  const handlePeriodCompleted = () => {
+    if (!shortTermGoal || shortTermGoal <= 0) return;
+    setPeriodsCompleted((prev) => prev + 1);
     onEarnCoins?.(WEEKLY_COINS);
   };
 
-  const handleClaimLongTermReward = () => {
-    if (!goalReached || longTermRewardClaimed) return;
-    onEarnCoins?.(LONG_TERM_COINS);
-    setLongTermRewardClaimed(true);
+  // ====== BONUS HÁBITO CONSTANTE (CUPÓN) ======
+  const [couponClaimed, setCouponClaimed] = useState(false);
+
+  const handleClaimCoupon = () => {
+    if (!goalReached || couponClaimed) return;
+    // Aquí no damos monedas, solo "desbloqueamos" cupón
+    setCouponClaimed(true);
+    // Podrías igual dar algunas monedas si quieres, pero la UI ahora habla de cupón
+    // onEarnCoins?.(20);
+    // Al reclamar el cupón, Kuri aumenta el plazo de la meta larga (crear hábito)
+    if (horizonIndex < HORIZON_STEPS.length - 1) {
+      setHorizonIndex((idx) => idx + 1);
+    }
   };
 
   return (
@@ -63,7 +90,7 @@ export default function SavingsGoalScreen({
             ← Volver
           </button>
           <h1 className="text-xl md:text-2xl font-bold">
-            Tu objetivo de ahorro 🎯
+            Tus objetivos de ahorro 🎯
           </h1>
           <div className="w-8" />
         </div>
@@ -86,23 +113,23 @@ export default function SavingsGoalScreen({
           </div>
         </section>
 
-        {/* ZONA SUPERIOR: OBJETIVO + TARRITO */}
+        {/* BLOQUE LARGO PLAZO + CORTO PLAZO */}
         <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr] gap-4">
-          {/* Objetivo y datos sugeridos */}
+          {/* LARGO PLAZO */}
           <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4">
             <h2 className="text-lg font-semibold mb-3">
-              Meta que Kuri te sugiere 💚
+              Meta de largo plazo (Kuri) 💚
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
               <div>
                 <label className="block text-xs text-slate-300 mb-1">
-                  Objetivo total (USD)
+                  Objetivo total sugerido (editable)
                 </label>
                 <input
                   type="number"
-                  value={goalInput}
-                  onChange={(e) => setGoalInput(e.target.value)}
+                  value={longTermGoalInput}
+                  onChange={(e) => setLongTermGoalInput(e.target.value)}
                   className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
                   placeholder="Ej: 300"
                 />
@@ -110,39 +137,34 @@ export default function SavingsGoalScreen({
 
               <div>
                 <label className="block text-xs text-slate-300 mb-1">
-                  Meta semanal sugerida
+                  Plazo actual
                 </label>
-                <div className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm flex items-center">
-                  {numericGoal > 0 ? (
-                    <span>
-                      ~{" "}
-                      <span className="font-semibold text-emerald-300">
-                        {weeklyTarget.toFixed(2)} USD
-                      </span>{" "}
-                      / semana
-                    </span>
-                  ) : (
-                    <span className="text-slate-400">
-                      Define una meta para empezar.
-                    </span>
-                  )}
+                <div className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm flex flex-col">
+                  <span>
+                    {currentHorizonMonths}{" "}
+                    {currentHorizonMonths === 1 ? "mes" : "meses"}
+                  </span>
+                  <span className="text-[10px] text-slate-400 mt-1">
+                    Cuando mantienes el hábito, Kuri va ampliando el plazo:
+                    luego {nextHorizonMonths} meses y más.
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Progreso numérico aproximado */}
+            {/* Progreso aproximado hacia la meta larga */}
             <div className="mt-1">
               <div className="flex justify-between text-[11px] text-slate-300 mb-1">
-                <span>Progreso hacia tu objetivo</span>
-                {numericGoal > 0 ? (
+                <span>Progreso hacia tu meta larga</span>
+                {longTermGoal > 0 ? (
                   <span>
-                    Semanas cumplidas:{" "}
+                    Veces que cumpliste tu meta corta:{" "}
                     <span className="font-semibold text-emerald-300">
-                      {weeksCompleted}
+                      {periodsCompleted}
                     </span>
                   </span>
                 ) : (
-                  <span>Define un objetivo</span>
+                  <span>Define una meta para empezar</span>
                 )}
               </div>
               <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
@@ -153,25 +175,23 @@ export default function SavingsGoalScreen({
                   style={{ width: `${Math.min(progress, 120)}%` }}
                 />
               </div>
-
-              {numericGoal > 0 && (
+              {longTermGoal > 0 && (
                 <p className="mt-1 text-[11px] text-slate-400">
-                  Ahorro aproximado:{" "}
+                  Ahorro aproximado asociado:{" "}
                   <span className="text-emerald-300">
                     ${approximateSaved.toFixed(2)}
                   </span>
                 </p>
               )}
-
               {goalReached && (
                 <p className="mt-2 text-xs text-emerald-300">
-                  🎉 ¡Llegaste a tu meta! Kuri está orgulloso de ti.
+                  🎉 ¡Comportamiento de ahorro súper sólido!
                 </p>
               )}
             </div>
           </section>
 
-          {/* Tarrito visual */}
+          {/* TARRITO / DEMO */}
           <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center">
             <h2 className="text-sm md:text-base font-semibold mb-2">
               Tarrito de ahorro 🫙
@@ -194,7 +214,7 @@ export default function SavingsGoalScreen({
             </div>
 
             <p className="text-xs text-slate-200 mt-2 text-center">
-              {numericGoal > 0 ? (
+              {longTermGoal > 0 ? (
                 <>
                   Tu tarrito va en{" "}
                   <span className="font-semibold text-emerald-300">
@@ -206,51 +226,101 @@ export default function SavingsGoalScreen({
                 "Pon una meta para empezar a llenarlo."
               )}
             </p>
+            <p className="mt-1 text-[10px] text-slate-400 text-center">
+              (Demo: tú marcas cuando cumples la meta. En la app final, Kuri lo
+              llena solo cuando detecta que sí cumpliste.)
+            </p>
           </section>
         </div>
 
-        {/* PROGRESO SEMANAL */}
+        {/* META CORTO PLAZO */}
         <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
             <div>
               <h2 className="text-sm md:text-base font-semibold mb-1">
-                Progreso semanal 💪
+                Meta de corto plazo ⚡
               </h2>
-              <p className="text-xs text-slate-200 mb-1">
-                Marca las semanas donde sentiste que cumpliste tu meta.
-              </p>
               <p className="text-xs text-slate-300">
-                Semanas cumplidas:{" "}
-                <span className="font-semibold text-emerald-300">
-                  {weeksCompleted}
-                </span>
+                Kuri te arma una meta corta que puedes ajustar.
               </p>
             </div>
 
-            <button
-              onClick={handleWeekCompleted}
-              disabled={!numericGoal || numericGoal <= 0}
-              className={`md:w-auto w-full px-4 py-2 rounded-xl text-sm font-semibold transition
-                ${
-                  numericGoal > 0
-                    ? "bg-emerald-400 text-slate-900 hover:bg-emerald-300"
-                    : "bg-slate-700 text-slate-400 cursor-not-allowed"
+            <div className="flex gap-2 text-xs">
+              <button
+                className={`px-3 py-1 rounded-full border ${
+                  shortTermMode === "week"
+                    ? "bg-emerald-400 text-slate-900 border-emerald-300"
+                    : "bg-slate-800 text-slate-200 border-slate-600"
                 }`}
-            >
-              + 1 semana cumplida
-            </button>
+                onClick={() => setShortTermMode("week")}
+              >
+                Meta semanal
+              </button>
+              <button
+                className={`px-3 py-1 rounded-full border ${
+                  shortTermMode === "month"
+                    ? "bg-emerald-400 text-slate-900 border-emerald-300"
+                    : "bg-slate-800 text-slate-200 border-slate-600"
+                }`}
+                onClick={() => setShortTermMode("month")}
+              >
+                Meta mensual
+              </button>
+            </div>
           </div>
 
-          <p className="mt-2 text-[11px] text-slate-400">
-            Cada semana cumplida:{" "}
-            <span className="text-amber-300 font-semibold">
-              +{WEEKLY_COINS} monedas
-            </span>{" "}
-            para tu Kuri.
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs text-slate-300 mb-1">
+                Meta corta sugerida ({shortTermMode === "week" ? "semana" : "mes"})
+              </label>
+              <input
+                type="number"
+                value={shortTermGoalInput || (shortTermGoal ? shortTermGoal : "")}
+                onChange={(e) => setShortTermGoalInput(e.target.value)}
+                className="w-full rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-400"
+                placeholder={
+                  shortTermMode === "week" ? "Ej: 15 USD/sem" : "Ej: 60 USD/mes"
+                }
+              />
+              <p className="mt-1 text-[11px] text-slate-400">
+                Basado en tus datos, pero siempre puedes ajustarla.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs text-slate-300 mb-1">
+                Veces que cumpliste tu meta corta
+              </label>
+              <div className="flex gap-2 items-center">
+                <div className="flex-1 rounded-xl bg-slate-800 border border-slate-600 px-3 py-2 text-sm">
+                  {periodsCompleted}
+                </div>
+                <button
+                  onClick={handlePeriodCompleted}
+                  disabled={!shortTermGoal || shortTermGoal <= 0}
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition
+                    ${
+                      shortTermGoal > 0
+                        ? "bg-emerald-400 text-slate-900 hover:bg-emerald-300"
+                        : "bg-slate-700 text-slate-400 cursor-not-allowed"
+                    }`}
+                >
+                  + 1 meta cumplida
+                </button>
+              </div>
+              <p className="mt-1 text-[11px] text-slate-400">
+                Cada vez que marcas una meta cumplida, ganas{" "}
+                <span className="text-amber-300 font-semibold">
+                  +{WEEKLY_COINS} monedas
+                </span>{" "}
+                para tu Kuri.
+              </p>
+            </div>
+          </div>
         </section>
 
-        {/* RETO MENSUAL DE KURI (AQUÍ VA EL RETO) */}
+        {/* RETO MENSUAL DE KURI */}
         {monthlyChallenge && (
           <section className="bg-emerald-900/70 border border-emerald-300/60 rounded-2xl p-4">
             <h2 className="text-sm md:text-base font-semibold text-emerald-100 mb-1">
@@ -271,37 +341,41 @@ export default function SavingsGoalScreen({
             <p className="mt-1 text-[11px] text-emerald-100">
               Progreso del reto: {monthlyChallenge.progress}%.
             </p>
-            <p className="mt-1 text-[11px] text-emerald-200">
-              Completarlo te acerca a recompensas reales y más moneditas 🪙✨
-            </p>
           </section>
         )}
 
-        {/* RECOMPENSA LARGO PLAZO */}
+        {/* BONUS HÁBITO = CUPÓN */}
         <section className="bg-slate-900/80 border border-emerald-500/40 rounded-2xl p-4">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div>
               <h2 className="text-sm md:text-base font-semibold flex items-center gap-2">
-                Bonus por hábito constante 🪙
+                Bonus por hábito constante 🎁
               </h2>
               <p className="text-xs text-slate-200 mt-1">
-                Si llegas al 100% de tu meta, puedes reclamar un bonus extra.
+                Si llegas al 100% de tu meta larga, desbloqueas un cupón real.
+              </p>
+              <p className="text-[11px] text-emerald-200 mt-1">
+                Ejemplo de demo:{" "}
+                <span className="font-semibold">
+                  cupón 15% en Sudan Coffee ☕
+                </span>{" "}
+                o en marcas aliadas.
               </p>
             </div>
 
             <button
-              onClick={handleClaimLongTermReward}
-              disabled={!goalReached || longTermRewardClaimed}
+              onClick={handleClaimCoupon}
+              disabled={!goalReached || couponClaimed}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition
                 ${
-                  goalReached && !longTermRewardClaimed
+                  goalReached && !couponClaimed
                     ? "bg-emerald-400 text-slate-900 hover:bg-emerald-300"
                     : "bg-slate-700 text-slate-400 cursor-not-allowed"
                 }`}
             >
-              {longTermRewardClaimed
-                ? "Recompensa reclamada ✅"
-                : `Reclamar +${LONG_TERM_COINS} monedas`}
+              {couponClaimed
+                ? "Cupón desbloqueado ✅"
+                : "Desbloquear cupón de sponsor"}
             </button>
           </div>
         </section>
