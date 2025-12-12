@@ -374,49 +374,68 @@ function App() {
             )}
 
             {/* MAIN: BURBUJA + KURI */}
-            <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
-              <div className="relative flex flex-col items-center w-full max-w-md flex-1">
-                {/* BURBUJA DE TEXTO */}
-                <div className="mt-6 md:mt-8 mb-2 w-full flex justify-center px-3 animate-fadeIn">
-                  <div className="relative w-full max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
-                    <h1 className="text-base md:text-lg font-bold text-emerald-100">
-                      ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾{" "}
-                      {moodData.emoji}
-                    </h1>
-                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
-                      {moodData.text}
-                    </p>
-                  </div>
-                </div>
-
-                {/* ESCENARIO / MASCOTA */}
-                <div className="relative w-full flex-1">
-                  <div className="absolute inset-x-0 bottom-[4rem] md:bottom-[-2rem] lg:bottom-[-3rem] flex justify-center">
-                    <div className="relative w-[16rem] h-[19rem] md:w-[18rem] md:h-[21rem] flex items-end justify-center">
-                      <img
-                        src={petImageState}
-                        alt="Mascota financiera"
-                        className="w-full h-full object-contain object-bottom drop-shadow-[0_0_25px_rgba(0,255,200,0.45)]"
-                      />
-
-                      {accessory && (
-                        <img
-                          src={accessory.img}
-                          alt={accessory.label}
-                          className="absolute object-contain"
-                          style={
-                            (accessoryStyles[currentPetId] &&
-                              accessoryStyles[currentPetId][accessory.id]) ||
-                            accessoryStyles.default[accessory.id]
-                          }
-                        />
-                      )}
+              <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
+                <div className="relative flex flex-col items-center w-full max-w-md flex-1">
+                  
+                  {/* BURBUJA DE TEXTO CON MOOD */}
+                  <div className="mt-6 md:mt-8 mb-2 w-full flex justify-center px-3 animate-fadeIn">
+                    <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
+                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
+                      <h1 className="text-base md:text-lg font-bold text-emerald-100">
+                        ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
+                      </h1>
+                      <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
+                        {moodData.text}
+                      </p>
                     </div>
                   </div>
+
+                  {/* ESCENARIO / MASCOTA */}
+                  <div className="relative w-full flex-1">
+                    <div
+                      className="
+                        absolute inset-x-0
+                        bottom-[3rem]        /* 🔽 KURI MÁS ABAJO */
+                        md:bottom-[-1rem]  
+                        lg:bottom-[-2rem]  
+                        flex justify-center
+                      "
+                    >
+                      <div
+                        className="
+                          relative
+                          w-[13rem] h-[16rem]     /* 🔽 KURI MÁS PEQUEÑO */
+                          md:w-[15rem] md:h-[18rem]
+                          flex items-end justify-center
+                        "
+                      >
+                        {/* MASCOTA */}
+                        <img
+                          src={petImageState}
+                          alt="Mascota financiera"
+                          className="w-full h-full object-contain object-bottom drop-shadow-[0_0_18px_rgba(0,255,200,0.35)]" 
+                        />
+
+                        {/* ACCESORIO */}
+                        {accessory && (
+                          <img
+                            src={accessory.img}
+                            alt={accessory.label}
+                            className="absolute object-contain"
+                            style={
+                              (accessoryStyles[currentPetId] &&
+                                accessoryStyles[currentPetId][accessory.id]) ||
+                              accessoryStyles.default[accessory.id]
+                            }
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
-              </div>
-            </main>
+              </main>
+
 
             {/* NAV */}
             <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
