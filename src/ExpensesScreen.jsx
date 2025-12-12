@@ -7,33 +7,44 @@ export default function ExpensesScreen({
   monthlyBudget,
   savingsGoal,
 }) {
-  const totalSpent = summary?.spentThisMonth ?? 0;
+  const budget = monthlyBudget ?? 0;           // Ej: 400
+  const goal = savingsGoal ?? 0;              // Ej: 80
+  const spent = summary?.spentThisMonth ?? 0;
   const remaining = summary?.remaining ?? 0;
-  const budget = monthlyBudget ?? 0;
-  const goal = savingsGoal ?? 0;
+  const percentage = summary?.percentage ?? 0;
 
-  // Agrupar gastos por categoría
-  const categories = {};
+  // Agrupar por categoría para usar en el plan
+  const categoriesTotals = {};
   transactions.forEach((t) => {
-    if (!categories[t.category]) categories[t.category] = 0;
-    categories[t.category] += t.amount;
+    if (!categoriesTotals[t.category]) categoriesTotals[t.category] = 0;
+    categoriesTotals[t.category] += t.amount;
   });
 
-  const maxCategory = Object.values(categories).reduce(
-    (max, val) => (val > max ? val : max),
-    0
-  );
+  const [topCategoryName, topCategoryValue] =
+    Object.entries(categoriesTotals).sort((a, b) => b[1] - a[1])[0] || [
+      "Entretenimiento",
+      0,
+    ];
 
+  // Últimos movimientos (ordenados por fecha descendente)
   const lastMovements = [...transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 6);
+    .slice(0, 5);
+
+  // Para el gráfico circular
+  const arcPercent = Math.min(percentage, 100);
+  const arcColor =
+    percentage <= 80 ? "#22c55e" : percentage <= 100 ? "#fbbf24" : "#f97373";
+
+  // Ahorro potencial si mantienes gasto así
+  const potentialSavings = Math.max(0, budget - spent);
 
   return (
     <div className="h-[100dvh] w-full bg-black/80 text-white flex justify-center">
-      {/* este es el contenedor que scrollea */}
-      <div className="w-full max-w-[480px] px-4 py-5 md:px-6 flex flex-col gap-4 overflow-y-auto pb-10">
+      {/* contenedor interno con scroll */}
+      <div className="w-full max-w-[480px] px-4 py-5 md:px-6 overflow-y-auto pb-10">
         {/* HEADER */}
-        <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center justify-between mb-4">
           <button
             className="text-sm bg-slate-800 px-4 py-2 rounded-xl hover:bg-slate-700"
             onClick={onBack}
@@ -48,25 +59,41 @@ export default function ExpensesScreen({
           <div className="w-8" />
         </div>
 
-        {/* RESUMEN DEL MES */}
-        <section className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl p-4">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-emerald-200">
-              Resumen rápido
-            </h2>
-            <span className="text-[11px] text-slate-300">
-              Presupuesto:{" "}
-              <span className="font-semibold text-emerald-300">
+        {/* RESUMEN + GRÁFICO CIRCULAR */}
+        <section className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl p-4 mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <p className="text-xs text-slate-300">Presupuesto mensual</p>
+              <p className="text-lg font-semibold text-emerald-300">
                 ${budget.toFixed(2)}
-              </span>
-            </span>
+              </p>
+            </div>
+
+            {/* Gráfico circular */}
+            <div className="relative w-24 h-24">
+              <div className="absolute inset-0 rounded-full">
+                <div
+                  className="w-full h-full rounded-full"
+                  style={{
+                    background: `conic-gradient(${arcColor} ${arcPercent}%, #0f172a ${arcPercent}% 100%)`,
+                  }}
+                />
+              </div>
+              <div className="absolute inset-2 rounded-full bg-slate-900 flex flex-col items-center justify-center">
+                <span className="text-xs text-slate-300">Usado</span>
+                <span className="text-sm font-semibold">
+                  {percentage}%
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 text-xs mt-2">
+          {/* números debajo del gráfico */}
+          <div className="grid grid-cols-2 gap-2 text-xs mt-2">
             <div className="flex flex-col">
               <span className="text-slate-400">Gastado</span>
               <span className="text-sm font-semibold">
-                ${totalSpent.toFixed(2)}
+                ${spent.toFixed(2)}
               </span>
             </div>
             <div className="flex flex-col">
@@ -75,87 +102,46 @@ export default function ExpensesScreen({
                 ${remaining.toFixed(2)}
               </span>
             </div>
+          </div>
+        </section>
+
+        {/* META DE AHORRO CONECTADA A OBJETIVO */}
+        <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 mb-4">
+          <h2 className="text-sm md:text-base font-semibold mb-1">
+            Tu ahorro este mes con Kuri 🐾
+          </h2>
+          <p className="text-xs text-slate-300 mb-2">
+            Meta de ahorro sugerida para este mes:
+          </p>
+
+          <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="flex flex-col">
-              <span className="text-slate-400">Meta de ahorro</span>
+              <span className="text-slate-400">Meta mensual</span>
               <span className="text-sm font-semibold text-emerald-300">
                 ${goal.toFixed(2)}
               </span>
             </div>
-          </div>
-
-          {/* Barra de progreso del presupuesto */}
-          <div className="mt-3">
-            <div className="flex justify-between text-[11px] text-slate-300 mb-1">
-              <span>Uso del presupuesto</span>
-              <span>
-                {summary ? summary.percentage : 0}
-                %
+            <div className="flex flex-col">
+              <span className="text-slate-400">Ahorro potencial</span>
+              <span className="text-sm font-semibold">
+                ${potentialSavings.toFixed(2)}
               </span>
             </div>
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-300"
-                style={{
-                  width: `${summary ? summary.percentage : 0}%`,
-                  backgroundColor:
-                    summary && summary.percentage <= 80
-                      ? "#4ade80"
-                      : summary && summary.percentage <= 100
-                      ? "#facc15"
-                      : "#f97373",
-                }}
-              />
-            </div>
           </div>
-        </section>
 
-        {/* GRÁFICO DE GASTOS POR CATEGORÍA */}
-        <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4">
-          <h2 className="text-sm md:text-base font-semibold mb-2">
-            Gráfico de tus gastos 📊
-          </h2>
-          <p className="text-[11px] text-slate-300 mb-3">
-            Kuri agrupa tus movimientos por categoría para que veas en qué se va
-            tu dinero sin tener que hacer Excel.
+          <p className="mt-2 text-[11px] text-slate-400">
+            Si mantienes el nivel de gasto de este demo, podrías ahorrar
+            alrededor de{" "}
+            <span className="text-emerald-300 font-semibold">
+              ${Math.min(goal, potentialSavings).toFixed(2)}
+            </span>{" "}
+            este mes, alineado con el objetivo que fijaste en la sección{" "}
+            <span className="font-semibold text-emerald-200">Tu objetivo</span>.
           </p>
-
-          <div className="flex flex-col gap-2">
-            {Object.keys(categories).length === 0 && (
-              <p className="text-xs text-slate-400">
-                Aún no hay gastos registrados en este demo.
-              </p>
-            )}
-
-            {Object.entries(categories).map(([cat, amount]) => {
-              const percent =
-                maxCategory > 0 ? (amount / maxCategory) * 100 : 0;
-
-              return (
-                <div key={cat} className="flex flex-col gap-1">
-                  <div className="flex justify-between text-[11px]">
-                    <span className="text-slate-200">{cat}</span>
-                    <span className="text-slate-300">
-                      ${amount.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{
-                        width: `${percent}%`,
-                        background:
-                          "linear-gradient(90deg, #22c55e, #a3e635)",
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </section>
 
-        {/* MOVIMIENTOS RECIENTES */}
-        <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4">
+        {/* ÚLTIMOS MOVIMIENTOS */}
+        <section className="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 mb-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-sm md:text-base font-semibold">
               Últimos movimientos
@@ -191,39 +177,46 @@ export default function ExpensesScreen({
           </div>
         </section>
 
-        {/* PLAN DE AHORRO PERSONALIZADO */}
-        <section className="bg-emerald-900/80 border border-emerald-300/60 rounded-2xl p-4 mb-4">
+        {/* PLAN PERSONALIZADO AL FINAL */}
+        <section className="bg-emerald-900/80 border border-emerald-300/60 rounded-2xl p-4 mb-2">
           <h2 className="text-sm md:text-base font-semibold text-emerald-100 mb-1">
-            Plan de ahorro personalizado de Kuri 🐾
+            Plan de ahorro personalizado de Kuri 💚
           </h2>
+
           <p className="text-xs text-emerald-50 mb-2">
-            Con tus datos de este mes, Kuri te propone un plan simple:
+            Con tus datos ficticios de este MVP, Kuri arma un mini plan:
           </p>
 
           <ul className="list-disc list-inside text-[11px] text-emerald-50 space-y-1">
             <li>
-              Mantener tu gasto mensual por debajo de{" "}
+              Intenta que tus gastos totales se mantengan por debajo de{" "}
               <span className="font-semibold">
                 ${budget.toFixed(2)}
               </span>{" "}
-              para no pasarte del presupuesto.
+              (tu presupuesto mensual).
             </li>
             <li>
-              Intentar ahorrar al menos{" "}
+              Reserva al menos{" "}
               <span className="font-semibold">
-                ${goal.toFixed(2)} al mes
+                ${goal.toFixed(2)} de ahorro
               </span>{" "}
-              (tu meta larga en la sección de objetivos).
+              en tu tarrito, como viste en <strong>Tu objetivo</strong>.
             </li>
             <li>
-              Revisar una vez por semana tus categorías más altas
-              (especialmente las que están arriba en el gráfico).
+              Revisa especialmente la categoría{" "}
+              <span className="font-semibold">{topCategoryName}</span>, donde
+              llevas unos{" "}
+              <span className="font-semibold">
+                ${topCategoryValue.toFixed(2)}
+              </span>{" "}
+              en este demo.
             </li>
           </ul>
 
           <p className="mt-2 text-[11px] text-emerald-200">
             En la versión conectada al banco, este plan se ajusta solo según tus
-            movimientos reales. Aquí lo ves ya simulado con tus datos ficticios.
+            movimientos reales. Aquí está sincronizado con los datos ficticios
+            que usa Kuri en toda la app.
           </p>
         </section>
       </div>

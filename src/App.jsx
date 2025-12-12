@@ -502,15 +502,18 @@ function App() {
           </div>
         )}
 
-        {/* RESUMEN DE GASTOS */}
         {screen === "expenses" && (
-          <div className="min-h-[100dvh] w-full bg-black/70">
+          <div className="min-h-screen w-full bg-black/70">
             <ExpensesScreen
               onBack={() => setScreen("home")}
               transactions={transactions}
+              summary={summary}
+              monthlyBudget={monthlyBudget}
+              savingsGoal={savingsGoal}
             />
           </div>
         )}
+
 
         {/* CONSEJOS */}
         {screen === "advice" && (
