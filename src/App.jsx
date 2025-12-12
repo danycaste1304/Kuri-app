@@ -9,12 +9,10 @@ import fondo1 from "./assets/Fondo1.png";
 import SplashScreen from "./SplashScreen";
 
 /* ===========================================
-   1. DATOS FICTICIOS COHERENTES (MVP)
+   1) DATOS FICTICIOS COHERENTES (MVP)
    =========================================== */
 
-const MOCK_USER = {
-  name: "Daniela",
-};
+const MOCK_USER = { name: "Daniela" };
 
 const MOCK_BANK = {
   bankName: "Banco Pichincha",
@@ -42,7 +40,7 @@ const MOCK_TRANSACTIONS = [
 const MOCK_SAVINGS_GOAL = 80;
 
 /* ===========================================
-   2. MOODS DE KURI
+   2) MOODS DE KURI
    =========================================== */
 
 const MOOD_THRESHOLDS = {
@@ -52,26 +50,14 @@ const MOOD_THRESHOLDS = {
 };
 
 const MOOD_CONFIG = {
-  happy: {
-    emoji: "✨",
-    text: "¡Vamos súper bien este mes! Estoy muy orgulloso de ti 💚.",
-  },
-  neutral: {
-    emoji: "😌",
-    text: "Vamos bien, pero aún podemos mejorar un poquito juntos.",
-  },
-  worried: {
-    emoji: "😟",
-    text: "Estamos cerca de tu presupuesto… yo te ayudo a no pasarnos.",
-  },
-  sad: {
-    emoji: "🥺",
-    text: "Nos pasamos un poco… pero no pasa nada, lo ajustamos el próximo mes.",
-  },
+  happy: { emoji: "✨", text: "¡Vamos súper bien este mes! Estoy muy orgulloso de ti 💚." },
+  neutral: { emoji: "😌", text: "Vamos bien, pero aún podemos mejorar un poquito juntos." },
+  worried: { emoji: "😟", text: "Estamos cerca de tu presupuesto… yo te ayudo a no pasarnos." },
+  sad: { emoji: "🥺", text: "Nos pasamos un poco… pero no pasa nada, lo ajustamos el próximo mes." },
 };
 
 /* ===========================================
-   3. LÓGICA FINANCIERA
+   3) LÓGICA FINANCIERA
    =========================================== */
 
 function getMonthlySummary(transactions, monthlyBudget) {
@@ -100,7 +86,7 @@ function getKuriMood(summary) {
 }
 
 function calculateKuriLevel(transactions) {
-  const xp = transactions.length * 10; // 10 XP por transacción
+  const xp = transactions.length * 10;
   const level = 1 + Math.floor(xp / 100);
   return { level, xp };
 }
@@ -117,7 +103,7 @@ function generateMonthlyChallenge(lastMonthSpent, currentSpent) {
     };
   }
 
-  const targetReductionPercent = 10; // 10% menos que el mes anterior
+  const targetReductionPercent = 10;
   const targetSpend = lastMonthSpent * (1 - targetReductionPercent / 100);
 
   const progress =
@@ -125,9 +111,7 @@ function generateMonthlyChallenge(lastMonthSpent, currentSpent) {
       ? 0
       : Math.min(
           100,
-          Math.round(
-            ((lastMonthSpent - currentSpent) / (lastMonthSpent - targetSpend)) * 100
-          )
+          Math.round(((lastMonthSpent - currentSpent) / (lastMonthSpent - targetSpend)) * 100)
         );
 
   return {
@@ -141,11 +125,12 @@ function generateMonthlyChallenge(lastMonthSpent, currentSpent) {
 }
 
 /* ===========================================
-   4. COMPONENTE PRINCIPAL
+   4) APP
    =========================================== */
 
-function App() {
+export default function App() {
   const [screen, setScreen] = useState("splash");
+
   const [petImageState, setPetImageState] = useState(defaultPetImage);
   const [currentPetId, setCurrentPetId] = useState("armadillo");
 
@@ -159,32 +144,31 @@ function App() {
 
   const [spendingAlert, setSpendingAlert] = useState(false);
 
-  const [monthlyBudget, setMonthlyBudget] = useState(MOCK_MONTHLY_BUDGET);
-  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
+  const [monthlyBudget] = useState(MOCK_MONTHLY_BUDGET);
+  const [transactions] = useState(MOCK_TRANSACTIONS);
   const [lastMonthSpent] = useState(MOCK_LAST_MONTH_SPENT);
-  const [savingsGoal, setSavingsGoal] = useState(MOCK_SAVINGS_GOAL);
+  const [savingsGoal] = useState(MOCK_SAVINGS_GOAL);
 
   const summary = getMonthlySummary(transactions, monthlyBudget);
   const kuriMood = getKuriMood(summary);
-  const { level: kuriLevel, xp: kuriXP } = calculateKuriLevel(transactions);
-  const monthlyChallenge = generateMonthlyChallenge(
-    lastMonthSpent,
-    summary.spentThisMonth
-  );
+  const moodData = MOOD_CONFIG[kuriMood] || MOOD_CONFIG.neutral;
 
+  const { level: kuriLevel, xp: kuriXP } = calculateKuriLevel(transactions);
+
+  const monthlyChallenge = generateMonthlyChallenge(lastMonthSpent, summary.spentThisMonth);
+
+  // Notificación si estamos cerca del presupuesto (simulada)
   useEffect(() => {
     if (screen !== "home") return;
 
     const timer = setTimeout(() => {
-      if (summary.percentage >= 90) {
-        setSpendingAlert(true);
-      }
+      if (summary.percentage >= 90) setSpendingAlert(true);
     }, 15000);
 
     return () => clearTimeout(timer);
   }, [screen, summary.percentage]);
 
-  // 🎯 ACCESORIOS RESPONSIVOS
+  // ACCESORIOS (tus estilos)
   const accessoryStyles = {
     armadillo: {
       sombrero: { top: "6%", left: "50%", width: "55%", transform: "translateX(-50%)" },
@@ -232,15 +216,11 @@ function App() {
 
   const displayName = userProfile?.name || "Usuario";
   const initials = displayName.charAt(0).toUpperCase();
-  const bankLabel = bankInfo
-    ? `${bankInfo.bankName} · •••• ${bankInfo.last4}`
-    : "Banco vinculado · •••• 1234";
-
-  const moodData = MOOD_CONFIG[kuriMood] || MOOD_CONFIG.neutral;
+  const bankLabel = bankInfo ? `${bankInfo.bankName} · •••• ${bankInfo.last4}` : "Banco vinculado · •••• 1234";
 
   return (
     <div
-      className="h-[100dvh] w-full bg-cover bg-center relative overflow-hidden"
+      className="min-h-[100dvh] w-full bg-cover bg-center"
       style={{
         backgroundImage: `url(${fondo1})`,
         backgroundSize: "cover",
@@ -248,16 +228,14 @@ function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* CONTENIDO PRINCIPAL: ocupa toda la altura de la pantalla */}
-      <div className="w-full h-full bg-black/45 flex flex-col">
+      {/* CAPA OSCURA */}
+      <div className="w-full min-h-[100dvh] bg-black/45 flex flex-col">
         {/* SPLASH */}
-        {screen === "splash" && (
-          <SplashScreen onFinish={() => setScreen("onboarding")} />
-        )}
+        {screen === "splash" && <SplashScreen onFinish={() => setScreen("onboarding")} />}
 
         {/* ONBOARDING */}
         {screen === "onboarding" && (
-          <div className="h-[100dvh] w-full bg-black/70 flex items-center justify-center px-4">
+          <div className="min-h-[100dvh] w-full bg-black/70 flex items-center justify-center px-4">
             <OnboardingScreen
               onComplete={(user, bank) => {
                 setUserProfile(user || MOCK_USER);
@@ -268,40 +246,31 @@ function App() {
           </div>
         )}
 
-        {/* HOME */}
+        {/* HOME (sin scroll; navbar fija abajo) */}
         {screen === "home" && (
-          <div className="flex-1 w-full flex flex-col bg-black/40">
+          <div className="relative flex-1 w-full flex flex-col bg-black/40 min-h-0">
             {/* HEADER */}
             <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 gap-3">
-              {/* IZQUIERDA: CUENTA VINCULADA */}
               <div className="flex items-center gap-2 max-w-[65%]">
                 <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-emerald-400/90 flex items-center justify-center border border-emerald-300 text-slate-950 font-bold text-xs md:text-sm">
                   <span>{initials}</span>
                 </div>
 
                 <div className="flex flex-col overflow-hidden">
-                  <span className="text-[10px] md:text-[11px] text-slate-300">
-                    Cuenta vinculada
-                  </span>
-
+                  <span className="text-[10px] md:text-[11px] text-slate-300">Cuenta vinculada</span>
                   <span className="text-[11px] md:text-xs font-semibold text-slate-50 truncate">
                     {bankLabel}
                   </span>
                 </div>
               </div>
 
-              {/* DERECHA: MONEDAS + NIVEL */}
               <div className="flex flex-col items-end gap-1">
                 <div className="flex items-center gap-1 bg-slate-900/80 border border-amber-300/70 rounded-full px-3 py-1 shadow-md">
                   <span className="text-lg">🪙</span>
-                  <span className="text-sm md:text-base font-semibold text-amber-300">
-                    {coins}
-                  </span>
+                  <span className="text-sm md:text-base font-semibold text-amber-300">{coins}</span>
                 </div>
                 <div className="text-right leading-tight">
-                  <span className="block text-[10px] text-emerald-200">
-                    Nivel de Kuri
-                  </span>
+                  <span className="block text-[10px] text-emerald-200">Nivel de Kuri</span>
                   <span className="text-[11px] md:text-xs font-semibold text-emerald-300">
                     Lv. {kuriLevel} · {kuriXP} XP
                   </span>
@@ -309,26 +278,19 @@ function App() {
               </div>
             </header>
 
-            {/* TARJETA RESUMEN FINANCIERO */}
-            <div className="px-4 md:px-6 mt-1 flex flex-col gap-2">
+            {/* RESUMEN */}
+            <div className="px-4 md:px-6 mt-1">
               <div className="bg-slate-900/80 border border-emerald-400/40 rounded-2xl px-3 py-3 shadow-md">
                 <div className="flex items-center justify-between mb-1">
-                  <h2 className="text-xs md:text-sm font-semibold text-emerald-100">
-                    Tu mes con Kuri 💛
-                  </h2>
+                  <h2 className="text-xs md:text-sm font-semibold text-emerald-100">Tu mes con Kuri 💛</h2>
                   <span className="text-[11px] text-emerald-200">
                     Presupuesto: ${monthlyBudget.toFixed(2)}
                   </span>
                 </div>
+
                 <p className="text-[11px] md:text-xs text-slate-200">
-                  Gastado:{" "}
-                  <span className="font-semibold">
-                    ${summary.spentThisMonth.toFixed(2)}
-                  </span>{" "}
-                  · Te queda:{" "}
-                  <span className="font-semibold">
-                    ${summary.remaining.toFixed(2)}
-                  </span>
+                  Gastado: <span className="font-semibold">${summary.spentThisMonth.toFixed(2)}</span> · Te queda:{" "}
+                  <span className="font-semibold">${summary.remaining.toFixed(2)}</span>
                 </p>
 
                 <div className="mt-2 h-2 w-full bg-slate-800 rounded-full overflow-hidden">
@@ -337,17 +299,12 @@ function App() {
                     style={{
                       width: `${summary.percentage}%`,
                       backgroundColor:
-                        summary.percentage <= 80
-                          ? "#4ade80"
-                          : summary.percentage <= 100
-                          ? "#facc15"
-                          : "#f97373",
+                        summary.percentage <= 80 ? "#4ade80" : summary.percentage <= 100 ? "#facc15" : "#f97373",
                     }}
                   />
                 </div>
-                <p className="mt-1 text-[10px] text-slate-300">
-                  Has usado el {summary.percentage}% de tu presupuesto.
-                </p>
+
+                <p className="mt-1 text-[10px] text-slate-300">Has usado el {summary.percentage}% de tu presupuesto.</p>
               </div>
             </div>
 
@@ -358,9 +315,8 @@ function App() {
                   <div className="text-xl pt-0.5">🐾</div>
                   <div className="flex-1">
                     <p className="text-xs md:text-sm text-amber-100">
-                      Oye, ya usamos casi todo tu presupuesto de este mes. A
-                      veces te mereces un gustito 💚, pero cuidemos tu ahorro…
-                      y también a mí.
+                      Oye, ya usamos casi todo tu presupuesto de este mes. A veces te mereces un gustito 💚, pero
+                      cuidemos tu ahorro… y también a mí.
                     </p>
                   </div>
                   <button
@@ -373,29 +329,27 @@ function App() {
               </div>
             )}
 
-            {/* MAIN: BURBUJA + KURI */}
-            <main className="flex-1 flex flex-col items-center px-3 pb-4 pt-1 md:px-4 md:pb-6">
+            {/* MAIN (con padding abajo para que no tape el nav fijo) */}
+            <main className="flex-1 flex flex-col items-center px-3 pt-1 pb-28 md:px-4 md:pb-32 min-h-0">
               <div className="flex flex-col items-center w-full max-w-md flex-1 justify-between">
-                {/* BURBUJA DE TEXTO CON MOOD */}
+                {/* BURBUJA */}
                 <div className="mt-6 md:mt-8 mb-2 w-full flex justify-center px-3 animate-fadeIn">
                   <div className="relative max-w-sm bg-emerald-700/40 backdrop-blur-sm border border-emerald-300/50 rounded-2xl px-4 py-3 shadow-lg shadow-emerald-500/30">
                     <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-700/40 border-l border-b border-emerald-300/50 rotate-45 rounded-bl-sm" />
                     <h1 className="text-base md:text-lg font-bold text-emerald-100">
                       ¡Hola! Soy <span className="text-emerald-300">Kuri</span> 🐾 {moodData.emoji}
                     </h1>
-                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">
-                      {moodData.text}
-                    </p>
+                    <p className="mt-1 text-xs md:text-sm text-emerald-50 leading-relaxed">{moodData.text}</p>
                   </div>
                 </div>
 
-                {/* ESCENARIO / MASCOTA */}
+                {/* MASCOTA */}
                 <div className="mt-2 mb-4 w-full flex justify-center">
                   <div
                     className="
                       relative
-                      w-[15.5rem] h-[18.5rem]
-                      md:w-[17rem] md:h-[20rem]
+                      w-[16.5rem] h-[19.5rem]
+                      md:w-[17.5rem] md:h-[20.5rem]
                       flex items-end justify-center
                     "
                   >
@@ -411,8 +365,7 @@ function App() {
                         alt={accessory.label}
                         className="absolute object-contain"
                         style={
-                          (accessoryStyles[currentPetId] &&
-                            accessoryStyles[currentPetId][accessory.id]) ||
+                          (accessoryStyles[currentPetId] && accessoryStyles[currentPetId][accessory.id]) ||
                           accessoryStyles.default[accessory.id]
                         }
                       />
@@ -422,8 +375,16 @@ function App() {
               </div>
             </main>
 
-            {/* NAV */}
-            <nav className="w-full px-4 pb-6 pt-4 md:px-6 md:pb-8 md:pt-5 flex justify-center">
+            {/* NAV FIJA (NO SE PIERDE) */}
+            <nav
+              className="
+                fixed left-0 right-0 bottom-0 z-50
+                px-4 md:px-6
+                pb-[calc(env(safe-area-inset-bottom)+16px)]
+                pt-4
+                flex justify-center
+              "
+            >
               <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
                 {[
                   { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
@@ -447,9 +408,9 @@ function App() {
           </div>
         )}
 
-        {/* PERSONALIZAR */}
+        {/* CUSTOMIZE (SCROLL EN ESTA PANTALLA) */}
         {screen === "customize" && (
-          <div className="h-[100dvh] w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
             <CustomizeScreen
               currentAccessory={accessory}
               selectedPetId={currentPetId}
@@ -464,8 +425,7 @@ function App() {
               }}
               onBuyPet={(petObj) => {
                 if (ownedPets.includes(petObj.id)) return;
-                if (coins < petObj.price)
-                  return alert("No tienes suficientes monedas.");
+                if (coins < petObj.price) return alert("No tienes suficientes monedas.");
                 setCoins((c) => c - petObj.price);
                 setOwnedPets((prev) => [...prev, petObj.id]);
               }}
@@ -475,8 +435,7 @@ function App() {
               }}
               onBuyAccessory={(acc) => {
                 if (ownedAccessories.includes(acc.id)) return;
-                if (coins < acc.price)
-                  return alert("No tienes suficientes monedas.");
+                if (coins < acc.price) return alert("No tienes suficientes monedas.");
                 setCoins((c) => c - acc.price);
                 setOwnedAccessories((prev) => [...prev, acc.id]);
                 setAccessory(acc);
@@ -486,9 +445,9 @@ function App() {
           </div>
         )}
 
-        {/* GASTOS */}
+        {/* EXPENSES (SCROLL ARREGLADO) */}
         {screen === "expenses" && (
-          <div className="h-[100dvh] w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
             <ExpensesScreen
               onBack={() => setScreen("home")}
               transactions={transactions}
@@ -499,9 +458,9 @@ function App() {
           </div>
         )}
 
-        {/* CONSEJOS */}
+        {/* ADVICE (SCROLL ARREGLADO) */}
         {screen === "advice" && (
-          <div className="h-[100dvh] w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
             <AdviceScreen
               onBack={() => setScreen("home")}
               summary={summary}
@@ -511,9 +470,9 @@ function App() {
           </div>
         )}
 
-        {/* AHORRO / TU OBJETIVO */}
+        {/* SAVINGS (SCROLL ARREGLADO) */}
         {screen === "savings" && (
-          <div className="h-[100dvh] w-full bg-black/70">
+          <div className="h-[100dvh] w-full bg-black/70 overflow-y-auto overscroll-contain">
             <SavingsGoalScreen
               onBack={() => setScreen("home")}
               onEarnCoins={(amount) => setCoins((c) => c + amount)}
@@ -528,5 +487,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
