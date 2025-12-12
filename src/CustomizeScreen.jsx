@@ -69,8 +69,10 @@ export default function CustomizeScreen({
   };
 
   return (
-    <div className="min-h-screen w-full bg-black/80 text-white flex justify-center">
-      <div className="w-full max-w-[480px] px-6 py-6">
+    // 👇 Contenedor de pantalla completa, sin scroll global
+    <div className="h-[100dvh] w-full bg-black/80 text-white flex justify-center">
+      {/* 👇 Este es el que scrollea */}
+      <div className="w-full max-w-[480px] px-6 py-6 overflow-y-auto flex flex-col pb-10">
         {/* Botón volver */}
         <button
           className="mb-4 text-sm bg-slate-800 px-4 py-2 rounded-xl hover:bg-slate-700"
