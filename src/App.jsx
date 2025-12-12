@@ -380,7 +380,7 @@ export default function App() {
               </div>
 
               {/* NAVBAR JUSTO DEBAJO DE LA MASCOTA (UN POCO MÁS ARRIBA / MÁS PEGADA A KURI) */}
-              <nav className="w-full px-4 pt-0 pb-2 flex justify-center -mt-1">
+              <nav className="w-full px-4 pt-2 pb-3 flex justify-center mt-2">
                 <div className="w-full max-w-md bg-slate-900/85 border border-slate-700 rounded-3xl px-5 py-3 flex justify-between gap-4 shadow-lg backdrop-blur-md">
                   {[
                     { label: "Gastos", icon: "❤️", action: () => setScreen("expenses") },
