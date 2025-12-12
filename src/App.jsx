@@ -335,7 +335,7 @@ export default function App() {
               className="
                 flex-1 flex flex-col items-center justify-between
                 px-3 pt-2
-                pb-[3.5rem]   /* ✅ reserva espacio real para que la mascota nunca tape la burbuja ni la navbar */
+                pb-[2.5rem]   /* ✅ reserva espacio real para que la mascota nunca tape la burbuja ni la navbar */
               "
             >
               {/* BURBUJA */}
